@@ -97,6 +97,7 @@ class ChromecastReceiver extends IPSModule {
 			}
 			
 		}
+
 		
 		//$this->SendDataToChildren(json_encode(['DataID' => '{3FBC907B-E487-DC82-2730-11F8CBD494A8}', 'Buffer' => $data->Buffer]));
 	}
