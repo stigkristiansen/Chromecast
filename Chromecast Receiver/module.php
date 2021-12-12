@@ -47,7 +47,7 @@ class ChromecastReceiver extends IPSModule {
 
 		$this->ConnectDevice();
 		$this->GetDeviceStatus();
-		$this->GetMediaStatus();
+		//$this->GetMediaStatus();
 	}
 
 	public function RequestAction($Ident, $Value) {
@@ -179,13 +179,19 @@ class ChromecastReceiver extends IPSModule {
 						$this->SendDebug(__FUNCTION__, 'Analyzing "RECEIVER_STATUS"...', 0);
 						
 						if(isset($data->status->applications[0]->transportId)) {
+							$oldTransportId = $this->transportId;
 							$this->transportId = $data->status->applications[0]->transportId;
-							$this->SendDebug(__FUNCTION__, sprintf('TransporId is %s', $this->transportId), 0);
+							$this->SendDebug(__FUNCTION__, sprintf('TransporId is "%s"', $this->transportId), 0);
+
+							if($oldTransportId!=$this->transportId) {
+								$this->SendDebug(__FUNCTION__, 'TransportId has changed. Conneting using new Id...', 0);
+								$this->ConnectDeviceTransport();
+							}
 						}
 
 						if(isset($data->status->applications[0]->sessionId)) {
 							$this->sessionId = $data->status->applications[0]->sessionId;
-							$this->SendDebug(__FUNCTION__, sprintf('SessionId is %s', $this->sessionId), 0);
+							$this->SendDebug(__FUNCTION__, sprintf('SessionId is "%s"', $this->sessionId), 0);
 						}
 
 						break;
