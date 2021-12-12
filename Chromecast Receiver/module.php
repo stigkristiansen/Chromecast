@@ -8,6 +8,7 @@ class ChromecastReceiver extends IPSModule {
 	private $requestId = 0;
 	private $transportId = "";
 	private $sessionId = "";
+	private $mediaSessionId = 0;
 	private $lastActiveTime;
 
 	public function Create() {
@@ -178,6 +179,11 @@ class ChromecastReceiver extends IPSModule {
 					case 'receiver_status':
 						$this->SendDebug(__FUNCTION__, 'Analyzing "RECEIVER_STATUS"...', 0);
 						
+						if(isset($data->status->applications[0]->sessionId)) {
+							$this->sessionId = $data->status->applications[0]->sessionId;
+							$this->SendDebug(__FUNCTION__, sprintf('SessionId is "%s"', $this->sessionId), 0);
+						}
+
 						if(isset($data->status->applications[0]->transportId)) {
 							$oldTransportId = $this->transportId;
 							$this->transportId = $data->status->applications[0]->transportId;
@@ -188,12 +194,13 @@ class ChromecastReceiver extends IPSModule {
 								$this->ConnectDeviceTransport();
 							}
 						}
-
-						if(isset($data->status->applications[0]->sessionId)) {
-							$this->sessionId = $data->status->applications[0]->sessionId;
-							$this->SendDebug(__FUNCTION__, sprintf('SessionId is "%s"', $this->sessionId), 0);
+						break;
+					case 'media_status':
+						$this->SendDebug(__FUNCTION__, 'Analyzing "MEDIA_STATUS"...', 0);
+						if(isset($data->status[0]->mediaSessionId)) {
+							$this->mediaSessionId = $data->status[0]->mediaSessionId;
+							$this->SendDebug(__FUNCTION__, sprintf('MediaSessionId is "%s"', $this->mediaSessionId), 0);
 						}
-
 						break;
 				}
 			}
