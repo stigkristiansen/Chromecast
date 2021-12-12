@@ -1,0 +1,19 @@
+{
+    "id": "{1AA6E1C3-E241-F658-AEC5-F8389B414A0C}",
+    "name": "Chromecast Receiver",
+    "type": 2,
+    "vendor": "Google",
+    "aliases": [],
+    "parentRequirements": [
+        "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}"
+    ],
+    "childRequirements": [
+        "{3FBC907B-E487-DC82-2730-11F8CBD494A8}"
+    ],
+    "implemented": [
+        "{7F9B2C92-8242-882A-6C12-DA76767C9CA0}",
+        "{018EF6B5-AB94-40C6-AA53-46943E824ACF}"
+    ],
+    "prefix": "CCR",
+    "url": ""
+}

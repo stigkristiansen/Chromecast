@@ -1,0 +1,16 @@
+{
+    "id": "{C8CE073C-D0D9-A7F9-C37E-A0C4978886E3}",
+    "name": "Chromecast Controller",
+    "type": 3,
+    "vendor": "Google",
+    "aliases": [],
+    "parentRequirements": [
+        "{7F9B2C92-8242-882A-6C12-DA76767C9CA0}"
+    ],
+    "childRequirements": [],
+    "implemented": [
+        "{3FBC907B-E487-DC82-2730-11F8CBD494A8}"
+    ],
+    "prefix": "CCC",
+    "url": ""
+}
