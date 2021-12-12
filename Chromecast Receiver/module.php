@@ -44,7 +44,7 @@ class ChromecastReceiver extends IPSModule {
 		$this->SetTimerInterval('PingPong', 5000);
 
 		$this->ConnectDevice();
-		$this->GetStatus();
+		$this->GetDeviceStatus();
 	}
 
 	public function RequestAction($Ident, $Value) {
@@ -92,7 +92,7 @@ class ChromecastReceiver extends IPSModule {
 		
 	}
 
-	private function GetStatus() {
+	private function GetDeviceStatus() {
 		// Get the status of the chromecast in general and return it
 		// also fills in the transportId of any currently running app
 		
