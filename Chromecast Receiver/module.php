@@ -40,7 +40,7 @@ class ChromecastReceiver extends IPSModule {
             $this->SetTimer();
     }
 
-	private function SetTimers() {
+	private function SetTimer() {
 		$this->SetTimerInterval('PingPong', 5000);
 	}
 
