@@ -65,11 +65,10 @@ class ChromecastReceiver extends IPSModule {
 		$msg->payloadtype = 0;
 		$msg->payloadutf8 = '{"type":"'.$Type.'"}';
 	
-		$this->lastActiveTime = time();
-		//$this->requestId++;
-		
 		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
 		$this->SendDebug(__FUNCTION__, $Type . ' was sent', 0);
+
+		$this->lastActiveTime = time();		
 	}
 
 	private function ConnectDevice() {
@@ -86,11 +85,11 @@ class ChromecastReceiver extends IPSModule {
 		$msg->payloadtype = 0;
 		$msg->payloadutf8 = '{"type":"CONNECT"}';
 		
-		$this->lastActiveTime = time();
-
 		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
 		$this->SendDebug(__FUNCTION__, ' CONNECT was sent to the device', 0);
-		
+
+		$this->lastActiveTime = time();
+				
 	}
 
 	private function GetDeviceStatus() {
@@ -103,12 +102,12 @@ class ChromecastReceiver extends IPSModule {
 		$msg->urnnamespace = "urn:x-cast:com.google.cast.receiver";
 		$msg->payloadtype = 0;
 		$msg->payloadutf8 = '{"type":"GET_STATUS","requestId":' . $this->requestId . '}';
-		
+						
+		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
+		$this->SendDebug(__FUNCTION__, sprintf('GET_STATUS was sent to the receiver with RequestId %d', $this->requestId), 0);
+
 		$this->lastActiveTime = time();
 		$this->requestId++;
-		
-		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
-		$this->SendDebug(__FUNCTION__, ' GET_STATUS was sent to the receiver', 0);
 	}
 
 	private function GetMediaStatus() {
@@ -119,11 +118,11 @@ class ChromecastReceiver extends IPSModule {
 		$msg->payloadtype = 0;
 		$msg->payloadutf8 = '{"type":"GET_STATUS","requestId":' . $this->requestId . '}';
 
+		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
+		$this->SendDebug(__FUNCTION__, sprintf('GET_STATUS was sent to the media with RequestId %d', $this->requestId), 0);
+
 		$this->lastActiveTime = time();
 		$this->requestId++;
-
-		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
-		$this->SendDebug(__FUNCTION__, ' GET_STATUS was sent to the media', 0);
 	}
 	
 
