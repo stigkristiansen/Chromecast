@@ -14,7 +14,7 @@ class ChromecastReceiver extends IPSModule {
 
 		$this->ForceParent('{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}');
 
-		$this->RegisterTimer('PingPong', 0, 'RequestAction("PingPong", 0);'); 
+		$this->RegisterTimer('PingPong', 0, 'IPS_RequestAction(' . (string)$this->InstanceID . ', "PingPong", 0);'); 
 
 		$this->RegisterMessage(0, IPS_KERNELMESSAGE);
 	}
