@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-include '__DIR__ . "/../libs/protobuf.php';
+include __DIR__ . '/../libs/protobuf.php';
 
 class ChromecastReceiver extends IPSModule {
 	private $requestId = 0;
@@ -98,7 +98,7 @@ class ChromecastReceiver extends IPSModule {
 			
 		}
 
-		
+
 		//$this->SendDataToChildren(json_encode(['DataID' => '{3FBC907B-E487-DC82-2730-11F8CBD494A8}', 'Buffer' => $data->Buffer]));
 	}
 }
