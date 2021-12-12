@@ -46,7 +46,6 @@ class ChromecastReceiver extends IPSModule {
 		$this->ConnectDevice();
 		$this->GetDeviceStatus();
 		$this->GetMediaStatus();
-
 	}
 
 	public function RequestAction($Ident, $Value) {
