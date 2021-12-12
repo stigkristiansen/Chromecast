@@ -205,6 +205,8 @@ class ChromecastReceiver extends IPSModule {
 				}
 			}
 			
+		} else {
+			$this->SendDebug(__FUNCTION__, 'Incoming data is not complete. Saving the data for later usage...', 0);
 		}
 
 
