@@ -6,6 +6,8 @@ include __DIR__ . '/../libs/protobuf.php';
 
 class ChromecastReceiver extends IPSModule {
 	private $requestId = 0;
+	private $transportId = "";
+	private $sessionId = "";
 	private $lastActiveTime;
 
 	public function Create() {
@@ -92,6 +94,23 @@ class ChromecastReceiver extends IPSModule {
 				
 	}
 
+	private function ConnectDeviceTransport() {
+		// This connects to the transport of the currently running app
+		// (you need to have launched it yourself or connected and got the status)
+		$msg = new CastMessage();
+		$msg->source_id = "sender-0";
+		$msg->receiver_id = $this->transportId;
+		$msg->urnnamespace = "urn:x-cast:com.google.cast.tp.connection";
+		$msg->payloadtype = 0;
+		$msg->payloadutf8 = '{"type":"CONNECT"}';
+		
+		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
+		$this->SendDebug(__FUNCTION__, ' CONNECT with TransportId was sent to the device', 0);
+
+		$this->lastActiveTime = time();
+		$this->requestId++;
+	}
+
 	private function GetDeviceStatus() {
 		// Get the status of the chromecast in general and return it
 		// also fills in the transportId of any currently running app
@@ -155,6 +174,20 @@ class ChromecastReceiver extends IPSModule {
 						break;
 					case 'pong':
 						$this->SendDebug(__FUNCTION__, 'Device responded to sent PING', 0);
+						break;
+					case 'receiver_status':
+						$this->SendDebug(__FUNCTION__, 'Analyzing "RECEIVER_STATUS"...', 0);
+						
+						if(isset($data->status->applications[0]->transportId)) {
+							$this->transportId = $data->status->applications[0]->transportId;
+							$this->SendDebug(__FUNCTION__, sprintf('TransporId is %s', $this->transportId), 0);
+						}
+
+						if(isset($data->status->applications[0]->sessionId)) {
+							$this->sessionId = $data->status->applications[0]->sessionId;
+							$this->SendDebug(__FUNCTION__, sprintf('SessionId is %s', $this->sessionId), 0);
+						}
+
 						break;
 				}
 			}
