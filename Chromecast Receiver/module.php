@@ -161,16 +161,25 @@ class ChromecastReceiver extends IPSModule {
 
 		$this->lastactivetime = time();
 
+		$buffer = $this->GetBuffer('Message');
+		if(strlen($buffer) > 0) {
+			$buffer .= utf8_decode($data->Buffer);
+		} else {
+			$buffer = utf8_decode($data->Buffer);
+		}
+
 		$regex = '/(\{(?:(?>[^{}"\/]+)|(?>"(?:(?>[^\\"]+)|\\.)*")|<(?>\/\*.*?\*\/)|(?-1))*\})/';
-		preg_match($regex, utf8_decode($data->Buffer), $result);
+		preg_match($regex, $buffer, $result);
 
 		if(count($result)>0) {
 			$data = json_decode($result[0]);
 
-			$this->SendDebug(__FUNCTION__, 'Analyzing incoming data...', 0);
+			$this->SendDebug(__FUNCTION__, 'Analyzing data...', 0);
 			$this->SendDebug(__FUNCTION__, sprintf('The data is "%s"', $result[0]), 0);
 
 			if(isset($data->type)) {
+				$this->SetBuffer('Message', '');
+
 				switch(strtolower($data->type)) {
 					case 'ping':
 						$this->SendDebug(__FUNCTION__, 'Sending PONG to device', 0);
@@ -208,10 +217,14 @@ class ChromecastReceiver extends IPSModule {
 				}
 			} else {
 				$this->SendDebug(__FUNCTION__, 'Missing "Type"! Incoming data is not complete. Saving the data for later usage...', 0);	
+
+				$this->SetBuffer('Message', $buffer);
 			}
 			
 		} else {
 			$this->SendDebug(__FUNCTION__, 'Incoming data is not complete. Saving the data for later usage...', 0);
+
+			$this->SetBuffer('Message', $buffer);
 		}
 
 
