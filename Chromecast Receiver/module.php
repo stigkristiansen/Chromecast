@@ -6,7 +6,7 @@ include __DIR__ . '/../libs/protobuf.php';
 
 class ChromecastReceiver extends IPSModule {
 	private $requestId = 0;
-	private $lastactivetime;
+	private $lastActiveTime;
 
 	public function Create() {
 		//Never delete this line!
@@ -29,7 +29,7 @@ class ChromecastReceiver extends IPSModule {
 		parent::ApplyChanges();
 
 		if (IPS_GetKernelRunlevel() == KR_READY) {
-            $this->SetTimer();
+            $this->Init();
         }
 	}
 
@@ -37,11 +37,14 @@ class ChromecastReceiver extends IPSModule {
         parent::MessageSink($TimeStamp, $SenderID, $Message, $Data);
 
         if ($Message == IPS_KERNELMESSAGE && $Data[0] == KR_READY) 
-            $this->SetTimer();
+            $this->Init();
     }
 
-	private function SetTimer() {
+	private function Init() {
 		$this->SetTimerInterval('PingPong', 5000);
+
+		$this->ConnectDevice();
+		$this->GetStatus();
 	}
 
 	public function RequestAction($Ident, $Value) {
@@ -61,11 +64,50 @@ class ChromecastReceiver extends IPSModule {
 		$msg->payloadtype = 0;
 		$msg->payloadutf8 = '{"type":"'.$Type.'"}';
 	
-		$this->lastactivetime = time();
+		$this->lastActiveTime = time();
 		//$this->requestId++;
 		
 		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
-		$this->SendDebug(__FUNCTION__, $Type . 'was sent', 0);
+		$this->SendDebug(__FUNCTION__, $Type . ' was sent', 0);
+	}
+
+	private function ConnectDevice() {
+		// CONNECT TO CHROMECAST
+		// This connects to the chromecast in general.
+		// Generally this is called by launch($appid) automatically upon launching an app
+		// but if you want to connect to an existing running application then call this first,
+		// then call getStatus() to make sure you get a transportid.
+		
+		$msg = new CastMessage();
+		$msg->source_id = "sender-0";
+		$msg->receiver_id = "receiver-0";
+		$msg->urnnamespace = "urn:x-cast:com.google.cast.tp.connection";
+		$msg->payloadtype = 0;
+		$msg->payloadutf8 = '{"type":"CONNECT"}';
+		
+		$this->lastActiveTime = time();
+
+		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
+		$this->SendDebug(__FUNCTION__, ' CONNECT was sent to the device', 0);
+		
+	}
+
+	private function GetStatus() {
+		// Get the status of the chromecast in general and return it
+		// also fills in the transportId of any currently running app
+		
+		$msg = new CastMessage();
+		$msg->source_id = "sender-0";
+		$msg->receiver_id = "receiver-0";
+		$msg->urnnamespace = "urn:x-cast:com.google.cast.receiver";
+		$msg->payloadtype = 0;
+		$msg->payloadutf8 = '{"type":"GET_STATUS","requestId":' . $this->requestId . '}';
+		
+		$this->lastActiveTime = time();
+		$this->requestId++;
+		
+		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
+		$this->SendDebug(__FUNCTION__, ' GET_STATUS was sent to the device', 0);
 	}
 	
 
