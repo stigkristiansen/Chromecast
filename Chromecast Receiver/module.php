@@ -47,24 +47,25 @@ class ChromecastReceiver extends IPSModule {
 	public function RequestAction($Ident, $Value) {
 		switch (strtolower($Ident)) {
 			case 'pingpong':
+				$this->SendDebug(__FUNCTION__, 'Sending PING to device...', 0);
 				$this->SendPingPong('PING');
+				break;
 		}
 	}
 
 	private function SendPingPong(string $Type) {
-		$c = new CastMessage();
-		$c->source_id = "sender-0";
-		$c->receiver_id = "receiver-0";
-		$c->urnnamespace = "urn:x-cast:com.google.cast.tp.heartbeat";
-		$c->payloadtype = 0;
-		$c->payloadutf8 = '{"type":"'.$Type.'"}';
-		//fwrite($this->socket, $c->encode());
-		//fflush($this->socket);
+		$msg = new CastMessage();
+		$msg->source_id = "sender-0";
+		$msg->receiver_id = "receiver-0";
+		$msg->urnnamespace = "urn:x-cast:com.google.cast.tp.heartbeat";
+		$msg->payloadtype = 0;
+		$msg->payloadutf8 = '{"type":"'.$Type.'"}';
+	
 		$this->lastactivetime = time();
-		$this->requestId++;
-
-		$this->SendDebug(__FUNCTION__, 'Sending ' . $Type . '...', 0);
-		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($c->encode())]));
+		//$this->requestId++;
+		
+		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
+		$this->SendDebug(__FUNCTION__, $Type . 'was sent', 0);
 	}
 	
 
@@ -92,7 +93,12 @@ class ChromecastReceiver extends IPSModule {
 			if(isset($data->type)) {
 				switch(strtolower($data->type)) {
 					case 'ping':
+						$this->SendDebug(__FUNCTION__, 'Sending PONG to device', 0);
 						$this->SendPingPong('PONG');
+						break;
+					case 'pong':
+						$this->SendDebug(__FUNCTION__, 'Device responded to sent PING', 0);
+						break;
 				}
 			}
 			
