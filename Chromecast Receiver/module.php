@@ -45,7 +45,8 @@ class ChromecastReceiver extends IPSModule {
 
 		$this->ConnectDevice();
 		$this->GetDeviceStatus();
-		
+		$this->GetMediaStatus();
+
 	}
 
 	public function RequestAction($Ident, $Value) {
@@ -108,7 +109,22 @@ class ChromecastReceiver extends IPSModule {
 		$this->requestId++;
 		
 		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
-		$this->SendDebug(__FUNCTION__, ' GET_STATUS was sent to the device', 0);
+		$this->SendDebug(__FUNCTION__, ' GET_STATUS was sent to the receiver', 0);
+	}
+
+	private function GetMediaStatus() {
+		$msg = new CastMessage();
+		$msg->source_id = "sender-0";
+		$msg->receiver_id = "receiver-0";
+		$msg->urnnamespace = "urn:x-cast:com.google.cast.media";
+		$msg->payloadtype = 0;
+		$msg->payloadutf8 = '{"type":"GET_STATUS","requestId":' . $this->requestId . '}';
+
+		$this->lastActiveTime = time();
+		$this->requestId++;
+
+		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
+		$this->SendDebug(__FUNCTION__, ' GET_STATUS was sent to the media', 0);
 	}
 	
 
