@@ -152,7 +152,7 @@ class ChromecastReceiver extends IPSModule {
 			$buffer = utf8_decode($data->Buffer);
 		}
 
-		$regex = $this->GetRegEx(); /*'/(\{(?:(?>[^{}"\/]+)|(?>"(?:(?>[^\\"]+)|\\.)*")|<(?>\/\*.*?\*\/)|(?-1))*\})/';*/
+		$regex = '/(\{(?:(?>[^{}"\/]+)|(?>"(?:(?>[^\\"]+)|\\.)*")|<(?>\/\*.*?\*\/)|(?-1))*\})/';
 		preg_match($regex, $buffer, $result);
 
 		if(count($result)>0) {
