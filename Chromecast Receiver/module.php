@@ -224,11 +224,11 @@ class ChromecastReceiver extends IPSModule {
 		'|'.$regExNumber.
 		'|'.$regExBoolean.
 		'|'; //string, number, boolean
-		$regEx. = '\[(?:(?1)(?:,(?1))*)?\s*\]|'; //arrays
-		$regEx. = '\{(?:\s*'.$regExString.
+		$regEx .= '\[(?:(?1)(?:,(?1))*)?\s*\]|'; //arrays
+		$regEx .= '\{(?:\s*'.$regExString.
 		'\s*:(?1)(?:,\s*'.$regExString.
 		'\s*:(?1))*)?\s*\}'; //objects
-		$regEx. = ')\Z/is';
+		$regEx .= ')\Z/is';
 
 		return $regEx;
 	}
