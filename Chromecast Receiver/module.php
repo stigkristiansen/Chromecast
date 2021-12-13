@@ -158,7 +158,7 @@ class ChromecastReceiver extends IPSModule {
 		if(count($result)>0) {
 			$data = json_decode($result[0]);
 
-			if{$data===null) {
+			if($data===null) {
 				$this->SendDebug(__FUNCTION__, 'Incoming data is not complete. Saving the data for later usage...', 0);	
 				$this->SetBuffer('Message', $buffer);
 			} else {
