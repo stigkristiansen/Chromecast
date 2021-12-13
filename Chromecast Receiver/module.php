@@ -152,6 +152,21 @@ class ChromecastReceiver extends IPSModule {
 			$buffer = utf8_decode($data->Buffer);
 		}
 
+		$handleData = false;
+		if(preg_match("/urn:x-cast:com.google.cast.receiver/s", $buffer)) {
+			$handleData = true;
+		} else if preg_match("/urn:x-cast:com.google.cast.media/s", $buffer)) {
+			$handleData = true;
+		} else if preg_match("/urn:x-cast:com.google.cast.tp.heartbeat/s", $buffer)) {
+			$handleData = true;
+		}
+
+		if(!$handleData) {
+			$this->SendDebug(__FUNCTION__, 'Incoming namespace is not handled', 0);	
+			$this->SetBuffer('Message', '');
+			return;
+		}
+
 		$regex = '/(\{(?:(?>[^{}"\/]+)|(?>"(?:(?>[^\\"]+)|\\.)*")|<(?>\/\*.*?\*\/)|(?-1))*\})/';
 		preg_match($regex, $buffer, $result);
 
