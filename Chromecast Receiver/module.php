@@ -155,9 +155,9 @@ class ChromecastReceiver extends IPSModule {
 		$handleData = false;
 		if(preg_match("/urn:x-cast:com.google.cast.receiver/s", $buffer)) {
 			$handleData = true;
-		} else if preg_match("/urn:x-cast:com.google.cast.media/s", $buffer)) {
+		} else if(preg_match("/urn:x-cast:com.google.cast.media/s", $buffer)) {
 			$handleData = true;
-		} else if preg_match("/urn:x-cast:com.google.cast.tp.heartbeat/s", $buffer)) {
+		} else if(preg_match("/urn:x-cast:com.google.cast.tp.heartbeat/s", $buffer)) {
 			$handleData = true;
 		}
 
