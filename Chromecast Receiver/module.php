@@ -219,7 +219,7 @@ class ChromecastReceiver extends IPSModule {
 							$this->SendDebug(__FUNCTION__, sprintf('MediaSessionId is "%s"', $this->mediaSessionId), 0);
 						}
 						if(isset($data->status[0]->playerState)) {
-							$this->SendDebug(__FUNCTION__, sprintf('PlayerState is "%s"', $data->status[0]->playerState, 0);
+							$this->SendDebug(__FUNCTION__, sprintf('PlayerState is "%s"', $data->status[0]->playerState), 0);
 						}
 						break;
 				}
