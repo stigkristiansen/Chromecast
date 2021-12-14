@@ -83,11 +83,11 @@ class ChromecastReceiver extends IPSModule {
 		$msg->payloadtype = 0;
 		$msg->payloadutf8 = '{"type":"'.$Type.'"}';
 
-		if(strtolower($Type) == strtolower('ping')) {
+		/*if(strtolower($Type) == strtolower('ping')) {
 			$this->lastActiveTime = time();	
 			$this->SetBuffer('LastActiveTime', json_encode(time()));
 			$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is %d', json_decode($this->GetBuffer('LastActiveTime'))),0);
-		}
+		}*/
 	
 		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
 		$this->SendDebug(__FUNCTION__, $Type . ' was sent', 0);
