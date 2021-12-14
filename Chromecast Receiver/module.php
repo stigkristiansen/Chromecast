@@ -205,7 +205,7 @@ class ChromecastReceiver extends IPSModule {
 					case 'pong':
 						$this->SendDebug(__FUNCTION__, 'Device responded to sent PING', 0);
 
-						if(time() - $this->lastActiveTime > 10) {
+						if((time() - $this->lastActiveTime) > 10) {
 							$this->Init();
 						} else {
 							$this->lastActiveTime = time();
