@@ -82,6 +82,10 @@ class ChromecastReceiver extends IPSModule {
 		$msg->urnnamespace = "urn:x-cast:com.google.cast.tp.heartbeat";
 		$msg->payloadtype = 0;
 		$msg->payloadutf8 = '{"type":"'.$Type.'"}';
+
+		if($Type == strtolower('PING')) {
+			$this->lastActiveTime = time();	
+		}
 	
 		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
 		$this->SendDebug(__FUNCTION__, $Type . ' was sent', 0);
@@ -204,6 +208,8 @@ class ChromecastReceiver extends IPSModule {
 						break;
 					case 'pong':
 						$this->SendDebug(__FUNCTION__, 'Device responded to sent PING', 0);
+
+						$this->SendDebug(__FUNCTION__, sprintf('LastActiveTime=%d - Now=%d',$this->lastActiveTime, time()), 0);
 
 						if((time() - $this->lastActiveTime) > 10) {
 							$this->Init();
