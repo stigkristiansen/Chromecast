@@ -36,18 +36,19 @@ class ChromecastReceiver extends IPSModule {
         }
 
 		$this->RegisterMessage(0, IPS_KERNELMESSAGE);
-		$this->RegisterMessage(IPS_GetParent($this->InstanceID), IPS_INSTANCEMESSAGE);
+		$this->RegisterMessage(0, IPS_INSTANCEMESSAGE);
 	}
 
 	public function MessageSink($TimeStamp, $SenderID, $Message, $Data) {
         parent::MessageSink($TimeStamp, $SenderID, $Message, $Data);
 
+		$this->SendDebug(__FUNCTION__, sprintf('Received a message: %d - %d - %d', $SenderID, $Message, $data[0]), 0);
         if ($Message == IPS_KERNELMESSAGE && $Data[0] == KR_READY) {
             $this->SendDebug(__FUNCTION__, 'Detected "Kernel Ready"! Initialzing...', 0);
 			$this->Init();
 		}
 
-		if ($Message == IPS_INSTANCEMESSAGE && $Data[0] == IM_CONNECT) {
+		if ($SenderID==IPS_GetParent($this->InstanceID) && $Message == IPS_INSTANCEMESSAGE && $Data[0] == IM_CONNECT) {
 			$this->SendDebug(__FUNCTION__, 'Detected "Parent Connect"! Initialzing...', 0);
             $this->Init();
 		}
@@ -84,8 +85,7 @@ class ChromecastReceiver extends IPSModule {
 	
 		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
 		$this->SendDebug(__FUNCTION__, $Type . ' was sent', 0);
-
-		$this->lastActiveTime = time();		
+		
 	}
 
 	private function ConnectDevice() {
@@ -157,8 +157,6 @@ class ChromecastReceiver extends IPSModule {
 		$data = json_decode($JSONString);
 		$this->SendDebug(__FUNCTION__, 'Received from parent: ' . utf8_decode($data->Buffer), 0);
 
-		$this->lastactivetime = time();
-
 		$buffer = $this->GetBuffer('Message');
 		if(strlen($buffer) > 0) {
 			$buffer .= utf8_decode($data->Buffer);
@@ -206,6 +204,13 @@ class ChromecastReceiver extends IPSModule {
 						break;
 					case 'pong':
 						$this->SendDebug(__FUNCTION__, 'Device responded to sent PING', 0);
+
+						if(time() - $this->lastActiveTime > 10) {
+							$this->Init();
+						} else {
+							$this->lastActiveTime = time();
+						}
+				
 						break;
 					case 'receiver_status':
 						$this->SendDebug(__FUNCTION__, 'Analyzing "RECEIVER_STATUS"...', 0);
