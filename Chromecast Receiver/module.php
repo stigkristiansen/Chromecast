@@ -19,7 +19,7 @@ class ChromecastReceiver extends IPSModule {
 
 		$this->RegisterTimer('PingPong', 0, 'IPS_RequestAction(' . (string)$this->InstanceID . ', "PingPong", 0);'); 
 
-		$this->RegisterMessage(0, IPS_KERNELMESSAGE);
+		
 	}
 
 	public function Destroy() {
@@ -34,17 +34,31 @@ class ChromecastReceiver extends IPSModule {
 		if (IPS_GetKernelRunlevel() == KR_READY) {
             $this->Init();
         }
+
+		$this->RegisterMessage(0, IPS_KERNELMESSAGE);
+		$this->RegisterMessage(IPS_GetParent($this->InstanceID), IPS_INSTANCEMESSAGE);
 	}
 
 	public function MessageSink($TimeStamp, $SenderID, $Message, $Data) {
         parent::MessageSink($TimeStamp, $SenderID, $Message, $Data);
 
-        if ($Message == IPS_KERNELMESSAGE && $Data[0] == KR_READY) 
+        if ($Message == IPS_KERNELMESSAGE && $Data[0] == KR_READY) {
+            $this->SendDebug(__FUNCTION__, 'Detected "Kernel Ready"! Initialzing...', 0);
+			$this->Init();
+		}
+
+		if ($Message == IPS_INSTANCEMESSAGE && $Data[0] == IM_CONNECT) {
+			$this->SendDebug(__FUNCTION__, 'Detected "Parent Connect"! Initialzing...', 0);
             $this->Init();
+		}
     }
 
 	private function Init() {
 		$this->SetTimerInterval('PingPong', 5000);
+
+		$requestId = 0;
+		$transportId = "";
+		$sessionId = "";
 
 		$this->ConnectDevice();
 		$this->GetDeviceStatus();
