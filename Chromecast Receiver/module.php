@@ -18,8 +18,6 @@ class ChromecastReceiver extends IPSModule {
 		$this->ForceParent('{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}');
 
 		$this->RegisterTimer('PingPong', 0, 'IPS_RequestAction(' . (string)$this->InstanceID . ', "PingPong", 0);'); 
-
-		
 	}
 
 	public function Destroy() {
@@ -35,22 +33,17 @@ class ChromecastReceiver extends IPSModule {
             $this->Init();
         }
 
-		$this->RegisterMessage(0, IPS_KERNELMESSAGE);
-		$this->RegisterMessage(0, IPS_INSTANCEMESSAGE);
+		$this->RegisterMessage($this->InstanceID, IPS_KERNELMESSAGE);
 	}
 
 	public function MessageSink($TimeStamp, $SenderID, $Message, $Data) {
         parent::MessageSink($TimeStamp, $SenderID, $Message, $Data);
 
 		$this->SendDebug(__FUNCTION__, sprintf('Received a message: %d - %d - %d', $SenderID, $Message, $data[0]), 0);
-        if ($Message == IPS_KERNELMESSAGE && $Data[0] == KR_READY) {
+
+		if ($Message == IPS_KERNELMESSAGE && $Data[0] == KR_READY) {
             $this->SendDebug(__FUNCTION__, 'Detected "Kernel Ready"! Initialzing...', 0);
 			$this->Init();
-		}
-
-		if ($SenderID==IPS_GetParent($this->InstanceID) && $Message == IPS_INSTANCEMESSAGE && $Data[0] == IM_CONNECT) {
-			$this->SendDebug(__FUNCTION__, 'Detected "Parent Connect"! Initialzing...', 0);
-            $this->Init();
 		}
     }
 
@@ -82,13 +75,7 @@ class ChromecastReceiver extends IPSModule {
 		$msg->urnnamespace = "urn:x-cast:com.google.cast.tp.heartbeat";
 		$msg->payloadtype = 0;
 		$msg->payloadutf8 = '{"type":"'.$Type.'"}';
-
-		/*if(strtolower($Type) == strtolower('ping')) {
-			$this->lastActiveTime = time();	
-			$this->SetBuffer('LastActiveTime', json_encode(time()));
-			$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is %d', json_decode($this->GetBuffer('LastActiveTime'))),0);
-		}*/
-	
+		
 		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
 		$this->SendDebug(__FUNCTION__, $Type . ' was sent', 0);
 		
@@ -102,9 +89,8 @@ class ChromecastReceiver extends IPSModule {
 		$msg->payloadtype = 0;
 		$msg->payloadutf8 = '{"type":"CONNECT"}';
 
-		$this->lastActiveTime = time();
 		$this->SetBuffer('LastActiveTime', json_encode(time()));
-		$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is 5d', json_decode($this->GetBuffer('LastActiveTime'))),0);
+		$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is %d', json_decode($this->GetBuffer('LastActiveTime'))),0);
 		
 		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
 		$this->SendDebug(__FUNCTION__, ' CONNECT was sent to the device', 0);
@@ -119,9 +105,8 @@ class ChromecastReceiver extends IPSModule {
 		$msg->payloadtype = 0;
 		$msg->payloadutf8 = '{"type":"CONNECT"}';
 
-		$this->lastActiveTime = time();
 		$this->SetBuffer('LastActiveTime', json_encode(time()));
-		$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is 5d', json_decode($this->GetBuffer('LastActiveTime'))),0);
+		$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is %d', json_decode($this->GetBuffer('LastActiveTime'))),0);
 		
 		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
 		$this->SendDebug(__FUNCTION__, ' CONNECT with TransportId was sent to the device', 0);
@@ -136,7 +121,6 @@ class ChromecastReceiver extends IPSModule {
 		$msg->payloadtype = 0;
 		$msg->payloadutf8 = '{"type":"GET_STATUS","requestId":' . $this->requestId . '}';
 
-		$this->lastActiveTime = time();
 		$this->SetBuffer('LastActiveTime', json_encode(time()));
 		$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is 5d', json_decode($this->GetBuffer('LastActiveTime'))),0);
 
