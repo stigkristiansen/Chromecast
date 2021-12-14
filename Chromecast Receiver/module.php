@@ -210,7 +210,7 @@ class ChromecastReceiver extends IPSModule {
 
 						$this->SendDebug(__FUNCTION__, sprintf('LastActiveTime=%d - Now=%d',json_decode($this->GetBuffer('LastActiveTime')), time()), 0);
 
-						if((time() - json_decode($this->GetBuffer('LastActiveTime')) > 10) {
+						if(time() - json_decode($this->GetBuffer('LastActiveTime')) > 10) {
 							$this->Init();
 						} else {
 							$this->SetBuffer('LastActiveTime', json_encode(time()));
