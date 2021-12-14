@@ -86,7 +86,7 @@ class ChromecastReceiver extends IPSModule {
 		if(strtolower($Type) == strtolower('ping')) {
 			$this->lastActiveTime = time();	
 			$this->SetBuffer('LastActiveTime', json_encode(time()));
-			$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is 5d', json_decode($this->GetBuffer('LastActiveTime'))),0);
+			$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is %d', json_decode($this->GetBuffer('LastActiveTime'))),0);
 		}
 	
 		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
@@ -214,7 +214,7 @@ class ChromecastReceiver extends IPSModule {
 							$this->Init();
 						} else {
 							$this->SetBuffer('LastActiveTime', json_encode(time()));
-							$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is ', json_decode($this->GetBuffer('LastActiveTime'))),0);
+							$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is %d', json_decode($this->GetBuffer('LastActiveTime'))),0);
 						}
 				
 						break;
