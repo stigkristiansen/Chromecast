@@ -83,9 +83,9 @@ class ChromecastReceiver extends IPSModule {
 		$msg->payloadtype = 0;
 		$msg->payloadutf8 = '{"type":"'.$Type.'"}';
 
-		if($Type == strtolower('PING')) {
-			$this->SendDebug(__FUNCTION__, 'Updating LastActiveTime', 0);	
+		if(strtolower($Type) == strtolower('ping')) {
 			$this->lastActiveTime = time();	
+			$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is ', $this->lastActiveTime),0);
 		}
 	
 		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
@@ -102,6 +102,7 @@ class ChromecastReceiver extends IPSModule {
 		$msg->payloadutf8 = '{"type":"CONNECT"}';
 
 		$this->lastActiveTime = time();
+		$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is ', $this->lastActiveTime),0);
 		
 		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
 		$this->SendDebug(__FUNCTION__, ' CONNECT was sent to the device', 0);
@@ -117,6 +118,7 @@ class ChromecastReceiver extends IPSModule {
 		$msg->payloadutf8 = '{"type":"CONNECT"}';
 
 		$this->lastActiveTime = time();
+		$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is ', $this->lastActiveTime),0);
 		
 		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
 		$this->SendDebug(__FUNCTION__, ' CONNECT with TransportId was sent to the device', 0);
@@ -132,6 +134,8 @@ class ChromecastReceiver extends IPSModule {
 		$msg->payloadutf8 = '{"type":"GET_STATUS","requestId":' . $this->requestId . '}';
 
 		$this->lastActiveTime = time();
+		$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is ', $this->lastActiveTime),0);
+
 		$this->requestId++;
 						
 		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
@@ -206,6 +210,7 @@ class ChromecastReceiver extends IPSModule {
 							$this->Init();
 						} else {
 							$this->lastActiveTime = time();
+							$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is ', $this->lastActiveTime),0);
 						}
 				
 						break;
