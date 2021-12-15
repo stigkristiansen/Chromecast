@@ -272,6 +272,7 @@ class ChromecastReceiver extends IPSModule {
 	private function FetchBuffer(string $Name) {
 		if($this->Lock($Name)) {
 			$value = $this->GetBuffer($Name);
+			$this->SendDebug(__FUNCTION__, sprintf('Fetched "%s"',$Name), 0);
 			$this->Unlock($Name);
 			return $value;
 		}
