@@ -29,11 +29,11 @@ class ChromecastReceiver extends IPSModule {
 		//Never delete this line!
 		parent::ApplyChanges();
 
+		$this->RegisterMessage($this->InstanceID, IPS_KERNELMESSAGE);
+
 		if (IPS_GetKernelRunlevel() == KR_READY) {
             $this->Init();
         }
-
-		$this->RegisterMessage($this->InstanceID, IPS_KERNELMESSAGE);
 	}
 
 	public function MessageSink($TimeStamp, $SenderID, $Message, $Data) {
@@ -138,7 +138,7 @@ class ChromecastReceiver extends IPSModule {
 		$this->SendDebug(__FUNCTION__, sprintf('GET_STATUS was sent to the receiver with RequestId %d', $requestId), 0);
 	}
 
-	private function GetMediaStatus() {
+	public function GetMediaStatus() {
 		$msg = new CastMessage();
 		$msg->source_id = "sender-0";
 		$msg->receiver_id = "receiver-0";
