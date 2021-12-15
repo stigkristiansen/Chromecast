@@ -98,9 +98,10 @@ class ChromecastReceiver extends IPSModule {
 	}
 
 	private function ConnectDeviceTransport() {
+		$transportId = $this->FetchBuffer('TransportId');
 		$msg = new CastMessage();
 		$msg->source_id = "sender-0";
-		$msg->receiver_id = $this->transportId;
+		$msg->receiver_id = $transportId;
 		$msg->urnnamespace = "urn:x-cast:com.google.cast.tp.connection";
 		$msg->payloadtype = 0;
 		$msg->payloadutf8 = '{"type":"CONNECT"}';
@@ -206,17 +207,19 @@ class ChromecastReceiver extends IPSModule {
 						$this->SendDebug(__FUNCTION__, 'Analyzing "RECEIVER_STATUS"...', 0);
 						
 						if(isset($data->status->applications[0]->sessionId)) {
-							$this->sessionId = $data->status->applications[0]->sessionId;
+							$this->UpdateBuffer('SessionId', $data->status->applications[0]->sessionId);
 							$this->SendDebug(__FUNCTION__, sprintf('SessionId is "%s"', $this->sessionId), 0);
 						}
 
 						if(isset($data->status->applications[0]->transportId)) {
 							$oldTransportId = $this->transportId;
-							$this->transportId = $data->status->applications[0]->transportId;
-							$this->SendDebug(__FUNCTION__, sprintf('TransporId is "%s"', $this->transportId), 0);
+							$newTransportId = $data->status->applications[0]->transportId;
+							
+							$this->UpdateBuffer('TransportId', $newTransportId)
+							$this->SendDebug(__FUNCTION__, sprintf('TransporId is "%s"', $newTransportId), 0);
 
-							if($oldTransportId!=$this->transportId) {
-								$this->SendDebug(__FUNCTION__, 'TransportId has changed. Conneting using new Id...', 0);
+							if($oldTransportId!=$newTransportId) {
+								$this->SendDebug(__FUNCTION__, 'TransportId has changed. Connecting using new Id...', 0);
 								$this->ConnectDeviceTransport();
 							}
 						}
@@ -224,7 +227,7 @@ class ChromecastReceiver extends IPSModule {
 					case 'media_status':
 						$this->SendDebug(__FUNCTION__, 'Analyzing "MEDIA_STATUS"...', 0);
 						if(isset($data->status[0]->mediaSessionId)) {
-							$this->mediaSessionId = $data->status[0]->mediaSessionId;
+							$this->UpdateBuffer('MediaSessionId', $data->status[0]->mediaSessionId);
 							$this->SendDebug(__FUNCTION__, sprintf('MediaSessionId is %d', $this->mediaSessionId), 0);
 						}
 						if(isset($data->status[0]->playerState)) {
