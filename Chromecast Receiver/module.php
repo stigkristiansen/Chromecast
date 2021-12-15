@@ -98,7 +98,7 @@ class ChromecastReceiver extends IPSModule {
 	}
 
 	private function ConnectDeviceTransport() {
-		$transportId = $this->FetchBuffer('TransportId');
+		$transportId = json_decode($this->FetchBuffer('TransportId'));
 		$msg = new CastMessage();
 		$msg->source_id = "sender-0";
 		$msg->receiver_id = $transportId;
@@ -207,7 +207,7 @@ class ChromecastReceiver extends IPSModule {
 						$this->SendDebug(__FUNCTION__, 'Analyzing "RECEIVER_STATUS"...', 0);
 						
 						if(isset($data->status->applications[0]->sessionId)) {
-							$this->UpdateBuffer('SessionId', $data->status->applications[0]->sessionId);
+							$this->UpdateBuffer('SessionId', json_encode($data->status->applications[0]->sessionId));
 							$this->SendDebug(__FUNCTION__, sprintf('SessionId is "%s"', $this->sessionId), 0);
 						}
 
@@ -215,7 +215,7 @@ class ChromecastReceiver extends IPSModule {
 							$oldTransportId = $this->transportId;
 							$newTransportId = $data->status->applications[0]->transportId;
 							
-							$this->UpdateBuffer('TransportId', $newTransportId);
+							$this->UpdateBuffer('TransportId', json_encode($newTransportId));
 							$this->SendDebug(__FUNCTION__, sprintf('TransporId is "%s"', $newTransportId), 0);
 
 							if($oldTransportId!=$newTransportId) {
@@ -227,7 +227,7 @@ class ChromecastReceiver extends IPSModule {
 					case 'media_status':
 						$this->SendDebug(__FUNCTION__, 'Analyzing "MEDIA_STATUS"...', 0);
 						if(isset($data->status[0]->mediaSessionId)) {
-							$this->UpdateBuffer('MediaSessionId', $data->status[0]->mediaSessionId);
+							$this->UpdateBuffer('MediaSessionId', json_encode($data->status[0]->mediaSessionId));
 							$this->SendDebug(__FUNCTION__, sprintf('MediaSessionId is %d', $this->mediaSessionId), 0);
 						}
 						if(isset($data->status[0]->playerState)) {
