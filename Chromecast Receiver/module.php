@@ -5,7 +5,7 @@ declare(strict_types=1);
 include __DIR__ . '/../libs/protobuf.php';
 
 class ChromecastReceiver extends IPSModule {
-	private $requestId = 0;
+	//private $requestId = 0;
 	//private $transportId = "";
 	//private $sessionId = "";
 	//private $mediaSessionId = 0;
@@ -123,36 +123,40 @@ class ChromecastReceiver extends IPSModule {
 		$msg->receiver_id = "receiver-0";
 		$msg->urnnamespace = "urn:x-cast:com.google.cast.receiver";
 		$msg->payloadtype = 0;
-		$msg->payloadutf8 = '{"type":"GET_STATUS","requestId":' . $this->requestId . '}';
+		$value = $this->FetchBuffer('RequestId');
+		$requestId=$value!==false?$value:0;
+		$msg->payloadutf8 = sprintf('{"type":"GET_STATUS","requestId":%d}', $requestId);
 		
 		$time = time();
 		$this->UpdateBuffer('LastActiveTime', $time);
 		$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is %d', $time),0);
 
-		$this->requestId++;
+		$requestId++;
+		$this->UpdateBuffer('RequestId', $requestId);
 						
 		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
-		$this->SendDebug(__FUNCTION__, sprintf('GET_STATUS was sent to the receiver with RequestId %d', $this->requestId), 0);
-
+		$this->SendDebug(__FUNCTION__, sprintf('GET_STATUS was sent to the receiver with RequestId %d', $requestId), 0);
 	}
 
-	private function GetDeviceMediaStatus() {
+	private function GetMediaStatus() {
 		$msg = new CastMessage();
 		$msg->source_id = "sender-0";
 		$msg->receiver_id = "receiver-0";
 		$msg->urnnamespace = "urn:x-cast:com.google.cast.media";
 		$msg->payloadtype = 0;
-		$msg->payloadutf8 = '{"type":"GET_STATUS","requestId":' . $this->requestId . '}';
+		$value = $this->FetchBuffer('RequestId');
+		$requestId=$value!==false?$value:0;
+		$msg->payloadutf8 = sprintf('{"type":"GET_STATUS","requestId":%d}', $requestId);
 		
 		$time = time();
 		$this->UpdateBuffer('LastActiveTime', $time);
 		$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is %d', $time),0);
 
-		$this->requestId++;
+		$requestId++;
+		$this->UpdateBuffer('RequestId', $requestId);
 						
 		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
-		$this->SendDebug(__FUNCTION__, sprintf('GET_STATUS (media) was sent to the receiver with RequestId %d', $this->requestId), 0);
-
+		$this->SendDebug(__FUNCTION__, sprintf('GET_STATUS (media) was sent to the receiver with RequestId %d', $requestId), 0);
 	}
 
 	public function ForwardData($JSONString) {
@@ -169,7 +173,7 @@ class ChromecastReceiver extends IPSModule {
 		$this->SendDebug(__FUNCTION__, 'Received from parent: ' . utf8_decode($data->Buffer), 0);
 
 		$buffer = $this->FetchBuffer('Message');
-		$this->SendDebug(__FUNCTION__, $buffer, 0);
+		//$this->SendDebug(__FUNCTION__, $buffer, 0);
 		if(strlen($buffer) > 0) {
 			$buffer .= utf8_decode($data->Buffer);
 		} else {
@@ -271,7 +275,6 @@ class ChromecastReceiver extends IPSModule {
 			$this->UpdateBuffer('Message', $buffer);
 		}
 
-
 		//$this->SendDataToChildren(json_encode(['DataID' => '{3FBC907B-E487-DC82-2730-11F8CBD494A8}', 'Buffer' => $data->Buffer]));
 	}
 
@@ -314,6 +317,7 @@ class ChromecastReceiver extends IPSModule {
 			$msg = sprintf('Failed to Fetch "%s"',$Name);
 			$this->LogMessage($msg, KL_ERROR);
 			$this->SendDebug(__FUNCTION__, $msg, 0);
+			return false;
 		}
 	}
 
