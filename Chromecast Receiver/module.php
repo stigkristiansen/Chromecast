@@ -264,6 +264,7 @@ class ChromecastReceiver extends IPSModule {
 	private function UpdateBuffer(string $Name, string $Value) {
 		if($this->Lock($Name)) {
 			$this->SetBuffer($Name, $Value);
+			$this->SendDebug(__FUNCTION__, sprintf('Updated "%s"',$Name), 0);
 			$this->Unlock($Name);
 		}
 	}
@@ -280,7 +281,7 @@ class ChromecastReceiver extends IPSModule {
 		$this->SendDebug(__FUNCTION__, sprintf('Locking "%s"...',$Name), 0);
         for ($i = 0; $i < 100; $i++){
             if (IPS_SemaphoreEnter(sprintf('%s%s',(string)$this->InstanceID,$Name), 1)){
-				$this->SendDebug(__FUNCTION__, sprintf('Locked "%s"',$Name), 0);
+				$this->SendDebug(__FUNCTION__, sprintf('"%s" is locked',$Name), 0);
                 return true;
             } else {
                 $this->SendDebug(__FUNCTION__, 'Waiting for lock...', 0);
