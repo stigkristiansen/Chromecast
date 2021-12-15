@@ -56,7 +56,6 @@ class ChromecastReceiver extends IPSModule {
 
 		$this->ConnectDevice();
 		$this->GetDeviceStatus();
-		//$this->GetMediaStatus();
 	}
 
 	public function RequestAction($Ident, $Value) {
@@ -89,8 +88,9 @@ class ChromecastReceiver extends IPSModule {
 		$msg->payloadtype = 0;
 		$msg->payloadutf8 = '{"type":"CONNECT"}';
 
-		$this->SetBuffer('LastActiveTime', json_encode(time()));
-		$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is %d', json_decode($this->GetBuffer('LastActiveTime'))),0);
+		$time = time();
+		$this->UpdateBuffer('LastActiveTime', json_encode($time));
+		$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is %d', $time),0);
 		
 		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
 		$this->SendDebug(__FUNCTION__, ' CONNECT was sent to the device', 0);
@@ -105,8 +105,9 @@ class ChromecastReceiver extends IPSModule {
 		$msg->payloadtype = 0;
 		$msg->payloadutf8 = '{"type":"CONNECT"}';
 
-		$this->SetBuffer('LastActiveTime', json_encode(time()));
-		$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is %d', json_decode($this->GetBuffer('LastActiveTime'))),0);
+		$time = time();
+		$this->UpdateBuffer('LastActiveTime', json_encode($time));
+		$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is %d', $time),0);
 		
 		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
 		$this->SendDebug(__FUNCTION__, ' CONNECT with TransportId was sent to the device', 0);
@@ -120,9 +121,10 @@ class ChromecastReceiver extends IPSModule {
 		$msg->urnnamespace = "urn:x-cast:com.google.cast.receiver";
 		$msg->payloadtype = 0;
 		$msg->payloadutf8 = '{"type":"GET_STATUS","requestId":' . $this->requestId . '}';
-
-		$this->SetBuffer('LastActiveTime', json_encode(time()));
-		$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is 5d', json_decode($this->GetBuffer('LastActiveTime'))),0);
+		
+		$time = time();
+		$this->UpdateBuffer('LastActiveTime', json_encode($time));
+		$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is %d', $time),0);
 
 		$this->requestId++;
 						
@@ -144,7 +146,7 @@ class ChromecastReceiver extends IPSModule {
 		$data = json_decode($JSONString);
 		$this->SendDebug(__FUNCTION__, 'Received from parent: ' . utf8_decode($data->Buffer), 0);
 
-		$buffer = $this->GetBuffer('Message');
+		$buffer = $this->FetchBuffer('Message');
 		if(strlen($buffer) > 0) {
 			$buffer .= utf8_decode($data->Buffer);
 		} else {
@@ -162,7 +164,7 @@ class ChromecastReceiver extends IPSModule {
 
 		if(!$handleData) {
 			$this->SendDebug(__FUNCTION__, 'Incoming namespace is not handled', 0);	
-			$this->SetBuffer('Message', '');
+			$this->UpdateBuffer('Message', '');
 			return;
 		}
 
@@ -174,10 +176,10 @@ class ChromecastReceiver extends IPSModule {
 
 			if($data===null) {
 				$this->SendDebug(__FUNCTION__, 'Incoming data is not complete. Saving the data for later usage...', 0);	
-				$this->SetBuffer('Message', $buffer);
+				$this->UpdateBuffer('Message', $buffer);
 				return;
 			} else {
-				$this->SetBuffer('Message', '');
+				$this->UpdateBuffer('Message', '');
 			}
 
 			$this->SendDebug(__FUNCTION__, 'Analyzing data...', 0);
@@ -192,15 +194,13 @@ class ChromecastReceiver extends IPSModule {
 					case 'pong':
 						$this->SendDebug(__FUNCTION__, 'Device responded to sent PING', 0);
 
-						$this->SendDebug(__FUNCTION__, sprintf('LastActiveTime=%d - Now=%d',json_decode($this->GetBuffer('LastActiveTime')), time()), 0);
-
 						if(time() - json_decode($this->GetBuffer('LastActiveTime')) > 10) {
 							$this->Init();
 						} else {
-							$this->SetBuffer('LastActiveTime', json_encode(time()));
-							$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is %d', json_decode($this->GetBuffer('LastActiveTime'))),0);
+							$time = time();
+							$this->UpdateBuffer('LastActiveTime', json_encode($time));
+							$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is %d', $time),0);
 						}
-				
 						break;
 					case 'receiver_status':
 						$this->SendDebug(__FUNCTION__, 'Analyzing "RECEIVER_STATUS"...', 0);
@@ -237,7 +237,7 @@ class ChromecastReceiver extends IPSModule {
 		} else {
 			$this->SendDebug(__FUNCTION__, 'Incoming data is not complete. Saving the data for later usage...', 0);
 
-			$this->SetBuffer('Message', $buffer);
+			$this->UpdateBuffer('Message', $buffer);
 		}
 
 
@@ -260,4 +260,38 @@ class ChromecastReceiver extends IPSModule {
 
 		return $regEx;
 	}
+
+	private function UpdateBuffer(string $Name, string $Value) {
+		if($this->Lock($Name)) {
+			$this->SetBuffer($Name, $Value);
+			$this->Unlock($Name);
+		}
+	}
+
+	private function FetchBuffer(string $Name, string $Value) {
+		if($this->Lock($Name)) {
+			$value = $this->GetBuffer($Name);
+			$this->Unlock($Name);
+			return $value;
+		}
+	}
+
+	private function Lock(string $Name) {
+		$this->SendDebug(__FUNCTION__, sprintf('Locking %s...',$Name), 0);
+        for ($i = 0; $i < 100; $i++){
+            if (IPS_SemaphoreEnter(sprintf('%s%s',(string)$this->InstanceID,$Name), 1)){
+				$this->SendDebug(__FUNCTION__, sprintf('Locked %s',$Name), 0);
+                return true;
+            } else {
+                $this->SendDebug(__FUNCTION__, 'Waiting for lock...', 0);
+				IPS_Sleep(mt_rand(1, 5));
+            }
+        }
+        return false;
+    }
+
+    private function Unlock(string $Name) {
+        IPS_SemaphoreLeave(sprintf('%s%s',(string)$this->InstanceID,$Name));
+		$this->SendDebug(__FUNCTION__, sprintf('Unlocked %s', $Name), 0);
+    }
 }
