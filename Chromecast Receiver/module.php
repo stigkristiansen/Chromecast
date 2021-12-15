@@ -194,13 +194,16 @@ class ChromecastReceiver extends IPSModule {
 						break;
 					case 'pong':
 						$this->SendDebug(__FUNCTION__, 'Device responded to sent PING', 0);
+						$newLastActiveTime = time();
+						$oldLastActiveTime = json_decode($this->FetchBuffer('LastActiveTime'));
 
-						if(time() - json_decode($this->GetBuffer('LastActiveTime')) > 10) {
+						$this->SendDebug(__FUNCTION__, sprintf('Old "LastActiveTime" is %d. New "LastActiveTime" is %d', $oldLastActiveTime, $newLastActiveTime),0);
+
+						if($newLastActiveTime - $oldLastActiveTime > 10) {
 							$this->Init();
 						} else {
-							$time = time();
-							$this->UpdateBuffer('LastActiveTime', json_encode($time));
-							$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is %d', $time),0);
+							$this->UpdateBuffer('LastActiveTime', json_encode($newLastActiveTime));
+							$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is %d', $newLastActiveTime),0);
 						}
 						break;
 					case 'receiver_status':
