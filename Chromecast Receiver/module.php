@@ -6,10 +6,10 @@ include __DIR__ . '/../libs/protobuf.php';
 
 class ChromecastReceiver extends IPSModule {
 	private $requestId = 0;
-	private $transportId = "";
-	private $sessionId = "";
-	private $mediaSessionId = 0;
-	private $lastActiveTime;
+	//private $transportId = "";
+	//private $sessionId = "";
+	//private $mediaSessionId = 0;
+	//private $lastActiveTime;
 
 	public function Create() {
 		//Never delete this line!
@@ -207,12 +207,13 @@ class ChromecastReceiver extends IPSModule {
 						$this->SendDebug(__FUNCTION__, 'Analyzing "RECEIVER_STATUS"...', 0);
 						
 						if(isset($data->status->applications[0]->sessionId)) {
-							$this->UpdateBuffer('SessionId', json_encode($data->status->applications[0]->sessionId));
-							$this->SendDebug(__FUNCTION__, sprintf('SessionId is "%s"', $this->sessionId), 0);
+							$sessionId = $data->status->applications[0]->sessionId;
+							$this->UpdateBuffer('SessionId', json_encode($sessionId));
+							$this->SendDebug(__FUNCTION__, sprintf('SessionId is "%s"', $sessionId), 0);
 						}
 
 						if(isset($data->status->applications[0]->transportId)) {
-							$oldTransportId = $this->transportId;
+							$oldTransportId = $this->FetchBuffer('TransportId');
 							$newTransportId = $data->status->applications[0]->transportId;
 							
 							$this->UpdateBuffer('TransportId', json_encode($newTransportId));
@@ -227,8 +228,9 @@ class ChromecastReceiver extends IPSModule {
 					case 'media_status':
 						$this->SendDebug(__FUNCTION__, 'Analyzing "MEDIA_STATUS"...', 0);
 						if(isset($data->status[0]->mediaSessionId)) {
-							$this->UpdateBuffer('MediaSessionId', json_encode($data->status[0]->mediaSessionId));
-							$this->SendDebug(__FUNCTION__, sprintf('MediaSessionId is %d', $this->mediaSessionId), 0);
+							$mediaSessionId = $data->status[0]->mediaSessionId;
+							$this->UpdateBuffer('MediaSessionId', json_encode($mediaSessionId));
+							$this->SendDebug(__FUNCTION__, sprintf('MediaSessionId is %d', $mediaSessionId), 0);
 						}
 						if(isset($data->status[0]->playerState)) {
 							$this->SendDebug(__FUNCTION__, sprintf('PlayerState is "%s"', $data->status[0]->playerState), 0);
