@@ -215,7 +215,7 @@ class ChromecastReceiver extends IPSModule {
 							$oldTransportId = $this->transportId;
 							$newTransportId = $data->status->applications[0]->transportId;
 							
-							$this->UpdateBuffer('TransportId', $newTransportId)
+							$this->UpdateBuffer('TransportId', $newTransportId);
 							$this->SendDebug(__FUNCTION__, sprintf('TransporId is "%s"', $newTransportId), 0);
 
 							if($oldTransportId!=$newTransportId) {
