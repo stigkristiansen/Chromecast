@@ -54,6 +54,7 @@ class ChromecastReceiver extends IPSModule {
 		$this->UpdateBuffer('TransportId', '');
 		$this->UpdateBuffer('SessionId', '');
 		$this->UpdateBuffer('MediaSessionId', 0);
+		$this->UpdateBuffer('Message', '');
 
 		$this->ConnectDevice();
 		$this->GetDeviceStatus();
