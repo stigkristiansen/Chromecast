@@ -268,7 +268,7 @@ class ChromecastReceiver extends IPSModule {
 		}
 	}
 
-	private function FetchBuffer(string $Name, string $Value) {
+	private function FetchBuffer(string $Name) {
 		if($this->Lock($Name)) {
 			$value = $this->GetBuffer($Name);
 			$this->Unlock($Name);
@@ -277,10 +277,10 @@ class ChromecastReceiver extends IPSModule {
 	}
 
 	private function Lock(string $Name) {
-		$this->SendDebug(__FUNCTION__, sprintf('Locking %s...',$Name), 0);
+		$this->SendDebug(__FUNCTION__, sprintf('Locking "%s"...',$Name), 0);
         for ($i = 0; $i < 100; $i++){
             if (IPS_SemaphoreEnter(sprintf('%s%s',(string)$this->InstanceID,$Name), 1)){
-				$this->SendDebug(__FUNCTION__, sprintf('Locked %s',$Name), 0);
+				$this->SendDebug(__FUNCTION__, sprintf('Locked "%s"',$Name), 0);
                 return true;
             } else {
                 $this->SendDebug(__FUNCTION__, 'Waiting for lock...', 0);
@@ -292,6 +292,6 @@ class ChromecastReceiver extends IPSModule {
 
     private function Unlock(string $Name) {
         IPS_SemaphoreLeave(sprintf('%s%s',(string)$this->InstanceID,$Name));
-		$this->SendDebug(__FUNCTION__, sprintf('Unlocked %s', $Name), 0);
+		$this->SendDebug(__FUNCTION__, sprintf('Unlocked "%s"', $Name), 0);
     }
 }
