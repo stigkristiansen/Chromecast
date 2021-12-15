@@ -200,6 +200,7 @@ class ChromecastReceiver extends IPSModule {
 						$this->SendDebug(__FUNCTION__, sprintf('Old "LastActiveTime" is %d. New "LastActiveTime" is %d', $oldLastActiveTime, $newLastActiveTime),0);
 
 						if($newLastActiveTime - $oldLastActiveTime > 10) {
+							$this->SendDebug(__FUNCTION__, 'Old "LastActiveTime" is too old. Initiazing to reconnect to the device...',0);
 							$this->Init();
 						} else {
 							$this->UpdateBuffer('LastActiveTime', json_encode($newLastActiveTime));
