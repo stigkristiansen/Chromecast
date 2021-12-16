@@ -83,8 +83,8 @@ class ChromecastReceiver extends IPSModule {
 				$this->SendDebug(__FUNCTION__, 'Sending PING to device...', 0);
 				$this->SendPingPong('PING');
 				break;
-			case 'discover':
-				$this->SendDebug(__FUNCTION__, 'Discovering the devices configuration...', 0);
+			case 'checkioconfig':
+				$this->SendDebug(__FUNCTION__, 'Checking the devices configuration...', 0);
 				$this->CheckIOConfig();
 				break;
 		}
