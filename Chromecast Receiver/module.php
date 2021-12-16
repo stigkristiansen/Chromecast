@@ -28,6 +28,7 @@ class ChromecastReceiver extends IPSModule {
 		
 		$this->RegisterTimer('PingPong', 0, 'IPS_RequestAction(' . (string)$this->InstanceID . ', "PingPong", 0);'); 
 		$this->RegisterTimer('CheckIOConfig', 0, 'IPS_RequestAction(' . (string)$this->InstanceID . ', "CheckIOConfig", 0);'); 
+		$this->RegisterTimer('DelayedInit', 0, 'IPS_RequestAction(' . (string)$this->InstanceID . ', "DelayedInit", 0);'); 
 	}
 
 	public function Destroy() {
@@ -58,11 +59,6 @@ class ChromecastReceiver extends IPSModule {
     }
 
 	private function Init(bool $NewDiscover=true) {
-		$this->SetTimerInterval('PingPong', 7000);
-		if($NewDiscover) {
-			$this->SetTimerInterval('CheckIOConfig', 5000);
-		}
-
 		$this->UpdateBuffer('RequestId', 0);
 		$this->UpdateBuffer('TransportId', '');
 		$this->UpdateBuffer('SessionId', '');
@@ -70,10 +66,17 @@ class ChromecastReceiver extends IPSModule {
 		$this->UpdateBuffer('Message', '');
 		$this->UpdateBuffer('LastActiveTime', time());
 
-		$this->ConnectDevice();
-		$this->GetDeviceStatus();
-	}
+		if($NewDiscover) {
+			$this->SetTimerInterval('CheckIOConfig', 1000);
+			$this->SetTimerInterval('DelayedInit', 5000);
+		} else  {
+			$this->ConnectDevice();
+			$this->GetDeviceStatus();
+		}
 
+		
+	}
+	
 	public function RequestAction($Ident, $Value) {
 		switch (strtolower($Ident)) {
 			case 'pingpong':
@@ -82,7 +85,17 @@ class ChromecastReceiver extends IPSModule {
 			case 'checkioconfig':
 				$this->CheckIOConfig();
 				break;
+			case 'checkioconfig':
+				$this->DelayedInit();
+				break;
 		}
+	}
+
+	private function DelayedInit() {
+		$this->SetTimerInterval('DelayedInit', 0;
+		$this->SetTimerInterval('PingPong', 5000);
+		$this->ConnectDevice();
+		$this->GetDeviceStatus();
 	}
 
 	private function CheckIOConfig() {
