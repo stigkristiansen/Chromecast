@@ -168,7 +168,7 @@
 						$displayName = $this->GetServiceTXTRecord($device[0]['TXTRecords'], 'fn');
 						$id = $this->GetServiceTXTRecord($device[0]['TXTRecords'], 'id');
 						if($displayName!==false && $id!==false) {
-							$this->SendDebug(__FUNCTION__, sprintf('Retrieved details for %s', $service['DisplayName']), 0);
+							$this->SendDebug(__FUNCTION__, sprintf('Retrieved details for %s', $displayName), 0);
 						
 							$devices[$id] = [	// Id is used as index
 								'Name' 		  => $service['Name'],
