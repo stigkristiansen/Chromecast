@@ -44,7 +44,7 @@
 			$devices = json_decode($this->GetBuffer('Devices'));
            
 			if (!json_decode($this->GetBuffer('SearchInProgress'))) {
-                $this->SendDebug(__FUNCTION__, Setting SearchInProgress to TRUE, 0);
+                $this->SendDebug(__FUNCTION__, 'Setting SearchInProgress to TRUE', 0);
 				$this->SetBuffer('SearchInProgress', json_encode(true));
 				
 				$this->SendDebug(__FUNCTION__, 'Starting a timer to process the search in a new thread...', 0);
