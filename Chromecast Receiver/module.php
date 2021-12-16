@@ -222,10 +222,6 @@ class ChromecastReceiver extends IPSModule {
 		$requestId=$value!==false?$value:0;
 		$msg->payloadutf8 = sprintf('{"type":"GET_STATUS","requestId":%d}', $requestId);
 		
-		//$time = time();
-		//$this->UpdateBuffer('LastActiveTime', $time);
-		//$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is %d', $time),0);
-
 		$requestId++;
 		$this->UpdateBuffer('RequestId', $requestId);
 						
@@ -243,10 +239,6 @@ class ChromecastReceiver extends IPSModule {
 		$requestId=$value!==false?$value:0;
 		$msg->payloadutf8 = sprintf('{"type":"GET_STATUS","requestId":%d}', $requestId);
 		
-		//$time = time();
-		//$this->UpdateBuffer('LastActiveTime', $time);
-		//$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is %d', $time),0);
-
 		$requestId++;
 		$this->UpdateBuffer('RequestId', $requestId);
 						
@@ -254,7 +246,7 @@ class ChromecastReceiver extends IPSModule {
 		$this->SendDebug(__FUNCTION__, sprintf('GET_STATUS (media) was sent to the receiver with RequestId %d', $requestId), 0);
 	}
 
-	public function Stop() {
+	private function Stop() {
 		$value = $this->FetchBuffer('RequestId');
 		$requestId=$value!==false?$value:0;
 
@@ -264,6 +256,27 @@ class ChromecastReceiver extends IPSModule {
 		$msg = new CastMessage();
 		$json = '{"type":"STOP", "sessionId":"'. $sessionId . '", "requestId":' .$requestId . '}';
 		$message = $msg->FormatMessage("urn:x-cast:com.google.cast.receiver", $json);
+
+		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($message)]));
+	}
+
+	public function Pause() {
+		$value = $this->FetchBuffer('RequestId');
+		$requestId=$value!==false?$value:0;
+
+		$value = $this->FetchBuffer('MediaSessionId');
+		$mediaSessionId=$value!==false?$value:0;
+
+		$value = $this->FetchBuffer('TransportId');
+		$transportId=$value!==false?$value:'';
+
+		$requestId++;
+		$this->UpdateBuffer('RequestId', $requestId)
+
+		$msg = new CastMessage();
+		$json = '{"type":"PAUSE", "mediaSessionId":' . $mediaSessionId . ', "requestId":'.$requestId.'}'
+		$urn = 'urn:x-cast:com.google.cast.media';
+		$message = $msg->FormatMessage($urn, $json, $transportId);
 
 		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($message)]));
 	}
@@ -281,13 +294,7 @@ class ChromecastReceiver extends IPSModule {
 		$data = json_decode($JSONString);
 		$this->SendDebug(__FUNCTION__, 'Received from parent: ' . utf8_decode($data->Buffer), 0);
 
-		//$newLastActiveTime = time();
-		//$oldLastActiveTime = $this->FetchBuffer('LastActiveTime');
-		//$this->UpdateBuffer('LastActiveTime', $newLastActiveTime);
-		//$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is %d', $newLastActiveTime),0);
-
 		$oldMessage = $this->FetchBuffer('Message');
-		//$this->SendDebug(__FUNCTION__, $buffer, 0);
 		if($oldMessage!=null && strlen($oldMessage) > 0) {
 			$buffer = $oldMessage . utf8_decode($data->Buffer);
 		} else {
