@@ -25,8 +25,6 @@ declare(strict_types=1);
 			//Never delete this line!
 			parent::ApplyChanges();
 
-			
-
 			$parentId = IPS_GetInstance($this->InstanceID)['ConnectionID'];
 			IPS_SetProperty($parentId, 'Name', $this->ReadPropertyString('Name'));
 			IPS_ApplyChanges($parentId);

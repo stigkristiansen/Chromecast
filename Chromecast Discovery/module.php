@@ -196,9 +196,9 @@
 		private function GetCCInstances () : array {
 			$devices = [];
 
-			$this->SendDebug(__FUNCTION__, sprintf('Building list of all created Chromecast instances (module id: %s)', '{26810601-2C6A-4663-BDB3-053FBEEA39EA}'), 0);
+			$this->SendDebug(__FUNCTION__, sprintf('Building list of all created Chromecast instances (module id: %s)', '{C8CE073C-D0D9-A7F9-C37E-A0C4978886E3}'), 0);
 
-			$instanceIds = IPS_GetInstanceListByModuleID('{26810601-2C6A-4663-BDB3-053FBEEA39EA}');
+			$instanceIds = IPS_GetInstanceListByModuleID('{C8CE073C-D0D9-A7F9-C37E-A0C4978886E3}'); 
         	
         	foreach ($instanceIds as $instanceId) {
 				$devices[$instanceId] = IPS_GetProperty($instanceId, 'Id');
