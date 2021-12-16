@@ -176,7 +176,7 @@
 							];	
 						} else {
 							$msg = 
-							$this->SendDebug(__FUNCTION__, 'Invalid query response from "%s". The response was: %s', $service['Name'], json_encode($device[0])), 0);
+							$this->SendDebug(__FUNCTION__, sprintf('Invalid query response from "%s". The response was: %s', $service['Name'], json_encode($device[0])), 0);
 							$this->LogMessage('Returned TXT-records are invalid', KL_ERROR);
 						}
 					}
