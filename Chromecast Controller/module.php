@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 			$this->RegisterPropertyString('Name', '');
 			$this->RegisterPropertyString('Id', '');
+
+			$this->ForceParent('{1AA6E1C3-E241-F658-AEC5-F8389B414A0C}');
 		}
 
 		public function Destroy()
@@ -23,7 +25,7 @@ declare(strict_types=1);
 			//Never delete this line!
 			parent::ApplyChanges();
 
-			$this->ForceParent('{1AA6E1C3-E241-F658-AEC5-F8389B414A0C}');
+			
 
 			$parentId = IPS_GetInstance($this->InstanceID)['ConnectionID'];
 			IPS_SetProperty($parentId, 'Name', $this->ReadPropertyString('Name'));
