@@ -93,7 +93,7 @@
 			
 			foreach ($ccDevices as $id => $device) {
 				$value = [
-					'DisplayName'	=> $device[DisplayName],
+					'DisplayName'	=> $device['DisplayName'],
 					'instanceID' 			=> 0,
 				];
 
