@@ -92,7 +92,7 @@ class ChromecastReceiver extends IPSModule {
 	}
 
 	private function DelayedInit() {
-		$this->SetTimerInterval('DelayedInit', 0;
+		$this->SetTimerInterval('DelayedInit', 0);
 		$this->SetTimerInterval('PingPong', 5000);
 		$this->ConnectDevice();
 		$this->GetDeviceStatus();
