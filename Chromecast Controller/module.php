@@ -24,6 +24,10 @@ declare(strict_types=1);
 			parent::ApplyChanges();
 
 			$this->ForceParent('{1AA6E1C3-E241-F658-AEC5-F8389B414A0C}');
+
+			$parentId = IPS_GetInstance($this->InstanceID)['ConnectionID'];
+			IPS_SetProperty($parentId, 'Name', $this->ReadPropertyString('Name'));
+			IPS_ApplyChanges($parentId);
 		}
 
 		public function Send()

@@ -19,7 +19,7 @@
 			//Never delete this line!
 			parent::Create();
 
-			$this->RegisterPropertyInteger('DiscoveryTimeout', 500);
+			$this->RegisterPropertyInteger('DiscoveryTimeout', 1000);
 
 			$this->SetBuffer('Devices', json_encode([]));
             $this->SetBuffer('SearchInProgress', json_encode(false));
