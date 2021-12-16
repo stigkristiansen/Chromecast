@@ -121,6 +121,7 @@ class ChromecastReceiver extends IPSModule {
 				}
 			}
 
+			
 			if($found) {
 				$this->SendDebug(__FUNCTION__, sprintf('Found device "%s". Querying for more information...', $name), 0);
 
