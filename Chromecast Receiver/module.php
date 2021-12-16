@@ -117,7 +117,7 @@ class ChromecastReceiver extends IPSModule {
 
 	}
 
-	private function GetDeviceStatus() {
+	public function GetDeviceStatus() {
 		$msg = new CastMessage();
 		$msg->source_id = "sender-0";
 		$msg->receiver_id = "receiver-0";
@@ -271,7 +271,6 @@ class ChromecastReceiver extends IPSModule {
 			
 		} else {
 			$this->SendDebug(__FUNCTION__, 'Incoming data is not complete. Saving the data for later usage...', 0);
-
 			$this->UpdateBuffer('Message', $buffer);
 		}
 
