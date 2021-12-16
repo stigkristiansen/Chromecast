@@ -134,7 +134,7 @@ class ChromecastReceiver extends IPSModule {
 					$newPort = $device[0]['Port'];
 
 					if($host!=$newHost || $port!=$newPort) {
-						IPS_SetProperty(, 'Host', $newHost);
+						IPS_SetProperty($parentId, 'Host', $newHost);
 						IPS_SetProperty($parentId, 'Port', $newPort);
 						IPS_SetProperty($parentId, "Open", true);
 						IPS_ApplyChanges($parentId);
