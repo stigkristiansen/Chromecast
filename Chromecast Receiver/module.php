@@ -92,9 +92,7 @@ class ChromecastReceiver extends IPSModule {
 
 	private function Discover() {
 		$this->SetTimerInterval('Discover', 60000);
-
-		$this->SendDebug(__FUNCTION__, 'Discovering configuration of the device...', 0);
-
+		
 		$parentId = IPS_GetInstance($this->InstanceID)['ConnectionID'];
 		$host = IPS_GetProperty($parentId, 'Host');
 		$port = IPS_GetProperty($parentId, 'Port');
