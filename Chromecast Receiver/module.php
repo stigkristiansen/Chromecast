@@ -139,9 +139,11 @@ class ChromecastReceiver extends IPSModule {
 						IPS_SetProperty($parentId, 'Port', $newPort);
 						IPS_SetProperty($parentId, "Open", true);
 						IPS_ApplyChanges($parentId);
+					} else {
+						$this->SendDebug(__FUNCTION__, 'There is no change in the configuration', 0);	
 					}
 				} else {
-					$this->SendDebug(__FUNCTION__, 'The query did not returne any information', 0);
+					$this->SendDebug(__FUNCTION__, 'The query did not returned any information', 0);
 				}
 			} else {
 				$this->SendDebug(__FUNCTION__, sprintf('The device "%s" was not found', $name), 0);
