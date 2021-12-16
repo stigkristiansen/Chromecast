@@ -58,9 +58,9 @@ class ChromecastReceiver extends IPSModule {
     }
 
 	private function Init(bool $NewDiscover=true) {
-		$this->SetTimerInterval('PingPong', 5000);
+		$this->SetTimerInterval('PingPong', 7000);
 		if($NewDiscover) {
-			$this->SetTimerInterval('CheckIOConfig', 500);
+			$this->SetTimerInterval('CheckIOConfig', 5000);
 		}
 
 		$this->UpdateBuffer('RequestId', 0);
