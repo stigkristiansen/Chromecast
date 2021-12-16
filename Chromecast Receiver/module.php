@@ -8,7 +8,7 @@ include __DIR__ . '/../libs/traits.php';
 class ChromecastReceiver extends IPSModule {
 	use ServiceDiscovery; 
 
-	
+
 	private $dnsSdId;
 
 	public function __construct($InstanceID) {
@@ -70,7 +70,7 @@ class ChromecastReceiver extends IPSModule {
 
 		if($NewDiscover) {
 			$this->SetTimerInterval('CheckIOConfig', 1000);
-			$this->SetTimerInterval('DelayedInit', 5000);
+			$this->SetTimerInterval('DelayedInit', 10000);
 		} else  {
 			$this->ConnectDevice();
 			$this->GetDeviceStatus();
@@ -212,7 +212,7 @@ class ChromecastReceiver extends IPSModule {
 
 	}
 
-	public function GetDeviceStatus() {
+	private function GetDeviceStatus() {
 		$msg = new CastMessage();
 		$msg->source_id = "sender-0";
 		$msg->receiver_id = "receiver-0";
@@ -233,7 +233,7 @@ class ChromecastReceiver extends IPSModule {
 		$this->SendDebug(__FUNCTION__, sprintf('GET_STATUS was sent to the receiver with RequestId %d', $requestId), 0);
 	}
 
-	public function GetMediaStatus() {
+	private function GetMediaStatus() {
 		$msg = new CastMessage();
 		$msg->source_id = 'sender-0';
 		$msg->receiver_id = 'receiver-0';
@@ -252,6 +252,20 @@ class ChromecastReceiver extends IPSModule {
 						
 		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
 		$this->SendDebug(__FUNCTION__, sprintf('GET_STATUS (media) was sent to the receiver with RequestId %d', $requestId), 0);
+	}
+
+	public function Stop() {
+		$value = $this->FetchBuffer('RequestId');
+		$requestId=$value!==false?$value:0;
+
+		$value = $this->FetchBuffer('SessionId');
+		$sessionId=$value!==false?$value:0;
+
+		$msg = new CastMessage();
+		$json = '{ "type": "STOP", "sessionId":"'. $sessionid . '", "requestId":' .$requestId . '}';
+		$message = $msg->FormatMessage("urn:x-cast:com.google.cast.receiver", $json);
+
+		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($message)]));
 	}
 
 	public function ForwardData($JSONString) {

@@ -1,13 +1,31 @@
 <?php
 
 class CastMessage {
-
 	public $protocolversion = 0; // CASTV2_1_0 - It's always this
 	public $source_id; // Source ID String
 	public $receiver_id; // Receiver ID String
 	public $urnnamespace; // Namespace
 	public $payloadtype = 0; // PayloadType String=0 Binary = 1
 	public $payloadutf8; // Payload
+
+	public function FormatMessage(string $Urn, string $Payload, string $TransportId = '')	{
+		$msg = new CastMessage();
+		$msg->source_id = "sender-0";
+				
+		if($Urn == "urn:x-cast:com.google.cast.receiver") {
+			$msg->receiver_id = "receiver-0";
+		} else if ($Urn == "urn:x-cast:com.google.cast.tp.connection") {
+			$msg->receiver_id = "receiver-0";
+		} else {
+			$msg->receiver_id = $TransportId;
+		}
+
+		$msg->urnnamespace = $Urn;
+		$msg->payloadtype = 0;
+		$msg->payloadutf8 = $Payload;
+		
+		return $msg->encode();;
+	}
 
 	public function encode() {
 
