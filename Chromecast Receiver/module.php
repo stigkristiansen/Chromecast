@@ -30,7 +30,7 @@ class ChromecastReceiver extends IPSModule {
 		$this->RegisterPropertyString('Id', '');
 		
 		$this->RegisterTimer('PingPong', 0, 'IPS_RequestAction(' . (string)$this->InstanceID . ', "PingPong", 0);'); 
-		$this->RegisterTimer('Discover', 0, 'IPS_RequestAction(' . (string)$this->InstanceID . ', "Discover", 0);'); 
+		$this->RegisterTimer('CheckIOConfig', 0, 'IPS_RequestAction(' . (string)$this->InstanceID . ', "CheckIOConfig", 0);'); 
 	}
 
 	public function Destroy() {
@@ -63,7 +63,7 @@ class ChromecastReceiver extends IPSModule {
 	private function Init(bool $NewDiscover=true) {
 		$this->SetTimerInterval('PingPong', 5000);
 		if($NewDiscover) {
-			$this->SetTimerInterval('Discover', 500);
+			$this->SetTimerInterval('CheckIOConfig', 500);
 		}
 
 		$this->UpdateBuffer('RequestId', 0);
@@ -85,13 +85,13 @@ class ChromecastReceiver extends IPSModule {
 				break;
 			case 'discover':
 				$this->SendDebug(__FUNCTION__, 'Discovering the devices configuration...', 0);
-				$this->Discover();
+				$this->CheckIOConfig();
 				break;
 		}
 	}
 
-	private function Discover() {
-		$this->SetTimerInterval('Discover', 60000);
+	private function CheckIOConfig() {
+		$this->SetTimerInterval('CheckIOConfig', 60000*5); // Check config very 5 minutes
 		
 		$parentId = IPS_GetInstance($this->InstanceID)['ConnectionID'];
 		$host = IPS_GetProperty($parentId, 'Host');
@@ -121,7 +121,7 @@ class ChromecastReceiver extends IPSModule {
 
 
 			if($found) {
-				$this->SendDebug(__FUNCTION__, sprintf('Found device "%s". Querying for more information...', $name), 0);
+				$this->SendDebug(__FUNCTION__, 'Found the device. Querying for more information...', 0);
 
 				$device = @ZC_QueryServiceEx($this->dnsSdId , $name, $type , $domain, $this->ReadPropertyInteger('DiscoveryTimeout')); 
 
