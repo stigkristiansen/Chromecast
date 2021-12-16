@@ -59,6 +59,8 @@ class ChromecastReceiver extends IPSModule {
     }
 
 	private function Init(bool $NewDiscover=true) {
+		$this->SendDebug(__FUNCTION__, 'Resetting buffers...', 0);
+		
 		$this->UpdateBuffer('RequestId', 0);
 		$this->UpdateBuffer('TransportId', '');
 		$this->UpdateBuffer('SessionId', '');
@@ -73,8 +75,6 @@ class ChromecastReceiver extends IPSModule {
 			$this->ConnectDevice();
 			$this->GetDeviceStatus();
 		}
-
-		
 	}
 	
 	public function RequestAction($Ident, $Value) {
