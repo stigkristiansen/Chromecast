@@ -1,0 +1,12 @@
+{
+    "id": "{2616C12C-F573-456B-BF91-13AD3506BBCF}",
+    "name": "Chromecast Discovery",
+    "type": 5,
+    "vendor": "Google",
+    "aliases": [],
+    "parentRequirements": [],
+    "childRequirements": [],
+    "implemented": [],
+    "prefix": "CCD",
+    "url": ""
+}

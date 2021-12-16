@@ -3,13 +3,10 @@
 declare(strict_types=1);
 
 include __DIR__ . '/../libs/protobuf.php';
+include __DIR__ . '/../libs/traits.php';
 
 class ChromecastReceiver extends IPSModule {
-	//private $requestId = 0;
-	//private $transportId = "";
-	//private $sessionId = "";
-	//private $mediaSessionId = 0;
-	//private $lastActiveTime;
+	use ServiceDiscovery; 
 
 	private $dnsSdId;
 
@@ -80,17 +77,17 @@ class ChromecastReceiver extends IPSModule {
 	public function RequestAction($Ident, $Value) {
 		switch (strtolower($Ident)) {
 			case 'pingpong':
-				$this->SendDebug(__FUNCTION__, 'Sending PING to device...', 0);
 				$this->SendPingPong('PING');
 				break;
 			case 'checkioconfig':
-				$this->SendDebug(__FUNCTION__, 'Checking the devices configuration...', 0);
 				$this->CheckIOConfig();
 				break;
 		}
 	}
 
 	private function CheckIOConfig() {
+		$this->SendDebug(__FUNCTION__, 'Checking the devices configuration...', 0);
+
 		$this->SetTimerInterval('CheckIOConfig', 60000*5); // Check config very 5 minutes
 		
 		$parentId = IPS_GetInstance($this->InstanceID)['ConnectionID'];
@@ -118,7 +115,6 @@ class ChromecastReceiver extends IPSModule {
 					}
 				}
 			}
-
 
 			if($found) {
 				$this->SendDebug(__FUNCTION__, 'Found the device. Querying for more information...', 0);
@@ -427,24 +423,4 @@ class ChromecastReceiver extends IPSModule {
 		//$this->SendDebug(__FUNCTION__, sprintf('Unlocked "%s"', $Name), 0);
     }
 
-	private function GetDnsSdId() {
-		$instanceIds = IPS_GetInstanceListByModuleID('{780B2D48-916C-4D59-AD35-5A429B2355A5}');
-		if(count($instanceIds)==0) {
-			$msg = 'DNSSD instance is missing';
-			$this->SendDebug(__FUNCTION__, $msg, 0);
-			$this->LogMessage($msg, KL_ERROR);
-			return false;
-		}
-		
-		return $instanceIds[0];
-	}
-
-	private function GetServiceTXTRecord($Records, $Key) {
-		foreach($Records as $record) {
-			if(stristr($record, $Key.'=')!==false)
-				return substr($record, 3);
-		}
-
-		return false;
-	}
 }

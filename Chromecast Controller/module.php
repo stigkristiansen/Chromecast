@@ -8,7 +8,8 @@ declare(strict_types=1);
 			//Never delete this line!
 			parent::Create();
 
-			$this->RequireParent('{1AA6E1C3-E241-F658-AEC5-F8389B414A0C}');
+			$this->RegisterPropertyString('Name', '');
+			$this->RegisterPropertyString('Id', '');
 		}
 
 		public function Destroy()
@@ -21,6 +22,8 @@ declare(strict_types=1);
 		{
 			//Never delete this line!
 			parent::ApplyChanges();
+
+			$this->ForceParent('{1AA6E1C3-E241-F658-AEC5-F8389B414A0C}');
 		}
 
 		public function Send()

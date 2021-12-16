@@ -1,0 +1,39 @@
+{
+    "elements": [
+        {
+            "type" :  "Label" ,  "caption" :  "DISCOVERY"
+        },
+        {
+            "type": "NumberSpinner", "name": "DiscoveryTimeout", "caption": "Discovery Timeout", "suffix": "milliseconds"
+        }
+    ],
+    "actions": [
+        {
+            "name": "SearchingInfo",
+			"type": "ProgressBar",
+			"caption": "Searching for devices. Please wait...",
+			"indeterminate": true,
+			"visible": false
+        },
+        {
+            "type": "Configurator",
+            "name": "Discovery",
+            "add": false,
+            "delete": true,
+            "sort": {
+                "column": "DisplayName",
+                "direction": "ascending"
+            },
+            "columns": [
+                {
+                    "caption": "Name",
+                    "name": "DisplayName",
+                    "width": "auto"
+                }
+            ],
+            "values": []
+        }
+    ]
+}
+
+
