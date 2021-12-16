@@ -142,7 +142,7 @@ class ChromecastReceiver extends IPSModule {
 		$msg = new CastMessage();
 		$msg->source_id = "sender-0";
 		$msg->receiver_id = "receiver-0";
-		$msg->urnnamespace = "urn:x-cast:com.google.cast.media";
+		$msg->urnnamespace = "urn:x-cast:com.google.cast.receiver";
 		$msg->payloadtype = 0;
 		$value = $this->FetchBuffer('RequestId');
 		$requestId=$value!==false?$value:0;
