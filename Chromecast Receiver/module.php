@@ -274,7 +274,7 @@ class ChromecastReceiver extends IPSModule {
 		$this->UpdateBuffer('RequestId', $requestId);
 
 		$msg = new CastMessage();
-		$json = '{"type":"PAUSE", "mediaSessionId":' . $mediaSessionId . ', "requestId":'.$requestId.'}'
+		$json = '{"type":"PAUSE", "mediaSessionId":' . $mediaSessionId . ', "requestId":'.$requestId.'}';
 		$urn = 'urn:x-cast:com.google.cast.media';
 		$message = $msg->FormatMessage($urn, $json, $transportId);
 
