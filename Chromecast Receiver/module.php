@@ -83,8 +83,8 @@ class ChromecastReceiver extends IPSModule {
 				$this->SendDebug(__FUNCTION__, 'Sending PING to device...', 0);
 				$this->SendPingPong('PING');
 				break;
-			case 'Discover':
-				$this->SendDebug(__FUNCTION__, 'Discovering the device IP-address...', 0);
+			case 'discover':
+				$this->SendDebug(__FUNCTION__, 'Discovering the devices configuration...', 0);
 				$this->Discover();
 				break;
 		}
@@ -121,7 +121,7 @@ class ChromecastReceiver extends IPSModule {
 				}
 			}
 
-			
+
 			if($found) {
 				$this->SendDebug(__FUNCTION__, sprintf('Found device "%s". Querying for more information...', $name), 0);
 
