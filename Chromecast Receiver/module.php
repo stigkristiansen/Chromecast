@@ -271,7 +271,7 @@ class ChromecastReceiver extends IPSModule {
 		$transportId=$value!==false?$value:'';
 
 		$requestId++;
-		$this->UpdateBuffer('RequestId', $requestId)
+		$this->UpdateBuffer('RequestId', $requestId);
 
 		$msg = new CastMessage();
 		$json = '{"type":"PAUSE", "mediaSessionId":' . $mediaSessionId . ', "requestId":'.$requestId.'}'
