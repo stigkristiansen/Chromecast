@@ -302,7 +302,7 @@ class ChromecastReceiver extends IPSModule {
 	private function UpdateBuffer(string $Name, $Value) {
 		if($this->Lock($Name)) {
 			$this->SetBuffer($Name, json_encode($Value));
-			$this->SendDebug(__FUNCTION__, sprintf('Updated "%s"',$Name), 0);
+			//$this->SendDebug(__FUNCTION__, sprintf('Updated "%s"',$Name), 0);
 			$this->Unlock($Name);
 		} else {
 			$msg = sprintf('Failed to Update "%s"',$Name);
@@ -319,7 +319,7 @@ class ChromecastReceiver extends IPSModule {
 			return json_decode($value);
 		} else {
 			$msg = sprintf('Failed to Fetch "%s"',$Name);
-			//$this->LogMessage($msg, KL_ERROR);
+			$this->LogMessage($msg, KL_ERROR);
 			$this->SendDebug(__FUNCTION__, $msg, 0);
 			return false;
 		}
