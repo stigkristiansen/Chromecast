@@ -85,7 +85,7 @@ class ChromecastReceiver extends IPSModule {
 			case 'checkioconfig':
 				$this->CheckIOConfig();
 				break;
-			case 'checkioconfig':
+			case 'delayedinit':
 				$this->DelayedInit();
 				break;
 		}
