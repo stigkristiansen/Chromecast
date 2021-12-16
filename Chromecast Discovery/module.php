@@ -104,7 +104,7 @@
 				if ($instanceId !== false) {
 					$this->SendDebug(__FUNCTION__, sprintf('The device %s exists with instance id %d', $device['DisplayName'], $instanceId), 0);
 					unset($ccInstances[$instanceId]); // Remove from list to avoid duplicates
-					$value['DisplayName' = IPS_GetName($instanceId);
+					$value['DisplayName'] = IPS_GetName($instanceId);
 					$value['instanceID'] = $instanceId;
 				} 
 				
