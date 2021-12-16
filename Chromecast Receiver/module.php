@@ -55,6 +55,7 @@ class ChromecastReceiver extends IPSModule {
 		$this->UpdateBuffer('SessionId', '');
 		$this->UpdateBuffer('MediaSessionId', 0);
 		$this->UpdateBuffer('Message', '');
+		$this->UpdateBuffer('LastActiveTime', time());
 
 		$this->ConnectDevice();
 		$this->GetDeviceStatus();
@@ -177,10 +178,10 @@ class ChromecastReceiver extends IPSModule {
 		//$this->UpdateBuffer('LastActiveTime', $newLastActiveTime);
 		//$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is %d', $newLastActiveTime),0);
 
-		$buffer = $this->FetchBuffer('Message');
+		$oldMessage = $this->FetchBuffer('Message');
 		//$this->SendDebug(__FUNCTION__, $buffer, 0);
-		if(strlen($buffer) > 0) {
-			$buffer .= utf8_decode($data->Buffer);
+		if(strlen($oldMessage) > 0) {
+			$buffer = $oldMessage . utf8_decode($data->Buffer);
 		} else {
 			$buffer = utf8_decode($data->Buffer);
 		}
@@ -210,7 +211,7 @@ class ChromecastReceiver extends IPSModule {
 				$this->SendDebug(__FUNCTION__, 'Incoming data is not complete. Saving the data for later usage...', 0);	
 				$this->UpdateBuffer('Message', $buffer);
 				return;
-			} else {
+			} else if(strlen($oldMessage) > 0) {
 				$this->UpdateBuffer('Message', '');
 			}
 
