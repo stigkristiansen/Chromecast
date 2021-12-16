@@ -229,14 +229,18 @@ class ChromecastReceiver extends IPSModule {
 		$this->SendDebug(__FUNCTION__, sprintf('GET_STATUS was sent to the receiver with RequestId %d', $requestId), 0);
 	}
 
-	private function GetMediaStatus() {
-		$msg = new CastMessage();
-		$msg->source_id = 'sender-0';
-		$msg->receiver_id = 'receiver-0';
-		$msg->urnnamespace = 'urn:x-cast:com.google.cast.media';
-		$msg->payloadtype = 0;
+	public function GetMediaStatus() {
+		$value = $this->FetchBuffer('TransportId');
+		$transportId=$value!==false?$value:'';
+
 		$value = $this->FetchBuffer('RequestId');
 		$requestId=$value!==false?$value:0;
+
+		$msg = new CastMessage();
+		$msg->source_id = 'sender-0';
+		$msg->receiver_id = $transportId;
+		$msg->urnnamespace = 'urn:x-cast:com.google.cast.media';
+		$msg->payloadtype = 0;
 		$msg->payloadutf8 = sprintf('{"type":"GET_STATUS","requestId":%d}', $requestId);
 		
 		$requestId++;
@@ -280,6 +284,28 @@ class ChromecastReceiver extends IPSModule {
 
 		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($message)]));
 	}
+
+	public function Play() {
+		$value = $this->FetchBuffer('RequestId');
+		$requestId=$value!==false?$value:0;
+
+		$value = $this->FetchBuffer('MediaSessionId');
+		$mediaSessionId=$value!==false?$value:0;
+
+		$value = $this->FetchBuffer('TransportId');
+		$transportId=$value!==false?$value:'';
+
+		$requestId++;
+		$this->UpdateBuffer('RequestId', $requestId);
+
+		$msg = new CastMessage();
+		$json = '{"type":"PLAY", "mediaSessionId":' . $mediaSessionId . ', "requestId":'.$requestId.'}';
+		$urn = 'urn:x-cast:com.google.cast.media';
+		$message = $msg->FormatMessage($urn, $json, $transportId);
+
+		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($message)]));
+	}
+
 
 	public function ForwardData($JSONString) {
 		$data = json_decode($JSONString);
