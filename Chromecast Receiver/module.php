@@ -42,7 +42,7 @@ class ChromecastReceiver extends IPSModule {
 		$this->RegisterMessage($this->InstanceID, IPS_KERNELMESSAGE);
 
 		if (IPS_GetKernelRunlevel() == KR_READY) {
-            $this->Init();
+            //$this->Init();
         }
 	}
 
@@ -175,7 +175,6 @@ class ChromecastReceiver extends IPSModule {
 		
 		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
 		$this->SendDebug(__FUNCTION__, $Type . ' was sent', 0);
-		
 	}
 
 	private function ConnectDevice() {
@@ -192,7 +191,6 @@ class ChromecastReceiver extends IPSModule {
 		
 		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
 		$this->SendDebug(__FUNCTION__, ' CONNECT was sent to the device', 0);
-
 	}
 
 	private function ConnectDeviceTransport() {
