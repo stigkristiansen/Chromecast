@@ -13,9 +13,11 @@
 		}
 
 		private function GetDnsSdId() {
-			$instanceIds = IPS_GetInstanceListByModuleID(Modules::DNSSD);
+			$instanceIds = IPS_GetInstanceListByModuleID('{780B2D48-916C-4D59-AD35-5A429B2355A5}');
 			if(count($instanceIds)==0) {
-				$this->LogMessage(Errors::MISSINGDNSSD, KL_ERROR);
+                $msg = 'The core module DNS-SD is missing';
+				$this->SendDebug(__FUNCTION__, $msg, 0);
+                $this->LogMessage($msg, KL_ERROR);
 				return false;
 			}
 			
