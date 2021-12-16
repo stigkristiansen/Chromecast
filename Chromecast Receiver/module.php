@@ -8,6 +8,7 @@ include __DIR__ . '/../libs/traits.php';
 class ChromecastReceiver extends IPSModule {
 	use ServiceDiscovery; 
 
+	
 	private $dnsSdId;
 
 	public function __construct($InstanceID) {
