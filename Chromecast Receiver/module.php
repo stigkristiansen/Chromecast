@@ -262,7 +262,7 @@ class ChromecastReceiver extends IPSModule {
 		$sessionId=$value!==false?$value:0;
 
 		$msg = new CastMessage();
-		$json = '{ "type": "STOP", "sessionId":"'. $sessionid . '", "requestId":' .$requestId . '}';
+		$json = '{"type":"STOP", "sessionId":"'. $sessionid . '", "requestId":' .$requestId . '}';
 		$message = $msg->FormatMessage("urn:x-cast:com.google.cast.receiver", $json);
 
 		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($message)]));
