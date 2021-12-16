@@ -63,7 +63,7 @@
 		}
 
 		public function RequestAction($Ident, $Value) {
-			$this->SendDebug( __FUNCTION__ , sprintf(ReqestAction called for Ident "%s" with Value %s, $Ident, (string)$Value), 0);
+			$this->SendDebug( __FUNCTION__ , sprintf('ReqestAction called for Ident "%s" with Value %s, $Ident', (string)$Value), 0);
 
 			switch (strtolower($Ident)) {
 				case 'discover':
