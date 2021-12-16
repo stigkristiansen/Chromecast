@@ -127,7 +127,7 @@ class ChromecastReceiver extends IPSModule {
 				$device = @ZC_QueryServiceEx($this->dnsSdId , $name, $type , $domain, $this->ReadPropertyInteger('DiscoveryTimeout')); 
 
 				if($device!==false && count($device)>0) {
-					$this->SendDebug(__FUNCTION__, sprintf('The query returned data' $name), 0);
+					$this->SendDebug(__FUNCTION__, 'The query returned data', 0);
 					$this->SendDebug(__FUNCTION__, sprintf('The data returned is: %s',json_encode($device[0])), 0);
 
 					$newHost = $device[0]['IPv4'][0];
