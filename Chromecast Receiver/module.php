@@ -24,8 +24,7 @@ class ChromecastReceiver extends IPSModule {
 
 		$this->RegisterPropertyInteger('DiscoveryTimeout', 500);
 		$this->RegisterPropertyString('Name', '');
-		$this->RegisterPropertyString('Id', '');
-		
+				
 		$this->RegisterTimer('PingPong', 0, 'IPS_RequestAction(' . (string)$this->InstanceID . ', "PingPong", 0);'); 
 		$this->RegisterTimer('CheckIOConfig', 0, 'IPS_RequestAction(' . (string)$this->InstanceID . ', "CheckIOConfig", 0);'); 
 		$this->RegisterTimer('DelayedInit', 0, 'IPS_RequestAction(' . (string)$this->InstanceID . ', "DelayedInit", 0);'); 
@@ -276,7 +275,7 @@ class ChromecastReceiver extends IPSModule {
 
 		$oldMessage = $this->FetchBuffer('Message');
 		//$this->SendDebug(__FUNCTION__, $buffer, 0);
-		if(strlen($oldMessage) > 0) {
+		if($oldMessage!=null && strlen($oldMessage) > 0) {
 			$buffer = $oldMessage . utf8_decode($data->Buffer);
 		} else {
 			$buffer = utf8_decode($data->Buffer);

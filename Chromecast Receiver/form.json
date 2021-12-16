@@ -4,9 +4,6 @@
             "type":"ValidationTextBox", "name":"Name", "caption":"Name", "enabled":true
         },
         {
-            "type":"ValidationTextBox", "name":"Id", "caption":"Id", "enabled":true
-        },
-        {
             "type":"NumberSpinner", "name":"DiscoveryTimeout", "caption":"Discovery Timeout", "suffix":"milliseconds"
         }
     ]
