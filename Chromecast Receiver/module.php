@@ -95,7 +95,7 @@ class ChromecastReceiver extends IPSModule {
 
 		$this->SendDebug(__FUNCTION__, 'Discovering configuration of the device...', 0);
 
-		$parent Id = IPS_GetParent($this->InstanceID);
+		$parent IPS_GetParent($this->InstanceID);
 		$host = IPS_GetProperty($parentId, 'Host');
 		$port = IPS_GetProperty($parentId, 'Port');
 
