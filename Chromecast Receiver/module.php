@@ -11,13 +11,26 @@ class ChromecastReceiver extends IPSModule {
 	//private $mediaSessionId = 0;
 	//private $lastActiveTime;
 
+	private $dnsSdId;
+
+	public function __construct($InstanceID) {
+		parent::__construct($InstanceID);
+
+		$this->dnsSdId = $this->GetDnsSdId(); 
+	}
+
 	public function Create() {
 		//Never delete this line!
 		parent::Create();
 
 		$this->ForceParent('{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}');
 
+		$this->RegisterPropertyInteger('DiscoveryTimeout', 500);
+		$this->RegisterPropertyString('Name', '');
+		$this->RegisterPropertyString('Id', '');
+		
 		$this->RegisterTimer('PingPong', 0, 'IPS_RequestAction(' . (string)$this->InstanceID . ', "PingPong", 0);'); 
+		$this->RegisterTimer('Discover', 0, 'IPS_RequestAction(' . (string)$this->InstanceID . ', "Discover", 0);'); 
 	}
 
 	public function Destroy() {
@@ -47,8 +60,11 @@ class ChromecastReceiver extends IPSModule {
 		}
     }
 
-	private function Init() {
+	private function Init(bool $NewDiscover=true) {
 		$this->SetTimerInterval('PingPong', 5000);
+		if($NewDiscover) {
+			$this->SetTimerInterval('Discover', 500);
+		}
 
 		$this->UpdateBuffer('RequestId', 0);
 		$this->UpdateBuffer('TransportId', '');
@@ -67,7 +83,73 @@ class ChromecastReceiver extends IPSModule {
 				$this->SendDebug(__FUNCTION__, 'Sending PING to device...', 0);
 				$this->SendPingPong('PING');
 				break;
+			case 'Discover':
+				$this->SendDebug(__FUNCTION__, 'Discovering the device IP-address...', 0);
+				$this->Discover();
+				break;
 		}
+	}
+
+	private function Discover() {
+		$this->SetTimerInterval('Discover', 60000);
+
+		$this->SendDebug(__FUNCTION__, 'Discovering configuration of the device...', 0);
+
+		$parent Id = IPS_GetParent($this->InstanceID);
+		$host = IPS_GetProperty($parentId, 'Host');
+		$port = IPS_GetProperty($parentId, 'Port');
+
+		$this->SendDebug(__FUNCTION__, sprintf('Current config of the device is "%s:%s"', $host, $port), 0);
+
+		try {
+			$type = '';
+			$domain = '';
+			$found = false;
+			$name = $this->ReadPropertyString('Name');
+
+			$this->SendDebug(__FUNCTION__, sprintf('Searching for "%s"...', $name), 0);
+
+			$services = @ZC_QueryServiceTypeEx($this->dnsSdId, "_googlecast._tcp", "", $this->ReadPropertyInteger('DiscoveryTimeout'));
+			if($services!==false) {
+				foreach($services as $service) {
+					if(strcasecmp($service['Name'], $name)==0) {
+						$found = true;
+						$domain = $service['Domain'];
+						$type = $service['Type'];
+						break;
+					}
+				}
+			}
+
+			if($found) {
+				$this->SendDebug(__FUNCTION__, sprintf('Found device "%s". Querying for more information...', $name), 0);
+
+				$device = @ZC_QueryServiceEx($this->dnsSdId , $name, $type , $domain, $this->ReadPropertyInteger('DiscoveryTimeout')); 
+
+				if($device!==false && count($device)>0) {
+					$this->SendDebug(__FUNCTION__, sprintf('The query returned data' $name), 0);
+					$this->SendDebug(__FUNCTION__, sprintf('The data returned is: %s',json_encode($device[0])), 0);
+
+					$newHost = $device[0]['IPv4'][0];
+					$newPort = $device[0]['Port'];
+
+					if($host!=$newHost || $port!=$newPort) {
+						IPS_SetProperty(, 'Host', $newHost);
+						IPS_SetProperty($parentId, 'Port', $newPort);
+						IPS_SetProperty($parentId, "Open", true);
+						IPS_ApplyChanges($parentId);
+					}
+				} else {
+					$this->SendDebug(__FUNCTION__, 'The query did not returne any information', 0);
+				}
+			} else {
+				$this->SendDebug(__FUNCTION__, sprintf('The device "%s" was not found', $name), 0);
+			}
+		} catch(Exception $e) {
+			$msg = sprintf('An unexpected error occurred: %s',  $e->getMessage());
+			$this->SendDebug(__FUNCTION__, $msg, 0);
+			$this->LogMessage($msg, KL_ERROR);
+		} 
 	}
 
 	private function SendPingPong(string $Type) {
@@ -232,7 +314,7 @@ class ChromecastReceiver extends IPSModule {
 
 						if($newLastActiveTime - $oldLastActiveTime > 10) {
 							$this->SendDebug(__FUNCTION__, sprintf('Old "LastActiveTime" (%d) is too old. Initiazing to reconnect to the device...', $oldLastActiveTime),0);
-							$this->Init();
+							$this->Init(false);
 						} else {
 							$this->UpdateBuffer('LastActiveTime', $newLastActiveTime);
 							$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is %d', $newLastActiveTime),0);
@@ -343,4 +425,25 @@ class ChromecastReceiver extends IPSModule {
         IPS_SemaphoreLeave(sprintf('%s%s',(string)$this->InstanceID,$Name));
 		//$this->SendDebug(__FUNCTION__, sprintf('Unlocked "%s"', $Name), 0);
     }
+
+	private function GetDnsSdId() {
+		$instanceIds = IPS_GetInstanceListByModuleID('{780B2D48-916C-4D59-AD35-5A429B2355A5}');
+		if(count($instanceIds)==0) {
+			$msg = 'DNSSD instance is missing';
+			$this->SendDebug(__FUNCTION__, $msg, 0);
+			$this->LogMessage($msg, KL_ERROR);
+			return false;
+		}
+		
+		return $instanceIds[0];
+	}
+
+	private function GetServiceTXTRecord($Records, $Key) {
+		foreach($Records as $record) {
+			if(stristr($record, $Key.'=')!==false)
+				return substr($record, 3);
+		}
+
+		return false;
+	}
 }
