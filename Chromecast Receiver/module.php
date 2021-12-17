@@ -90,6 +90,9 @@ class ChromecastReceiver extends IPSModule {
 			case 'delayedinit':
 				$this->DelayedInit();
 				break;
+			case 'handleinstructions':
+				$this->HandleInstructions(json_decode($Value));
+				break;
 		}
 	}
 
@@ -174,7 +177,8 @@ class ChromecastReceiver extends IPSModule {
 		$data = json_decode($JSONString);
 		if(isset($data->Buffer) && is_array($data->Buffer)) {
 			$this->SendDebug(__FUNCTION__, sprintf('Received instruction(s) from child instance: %s', json_encode($data->Buffer)), 0);
-			$this->HandleInstructions($data->Buffer);
+			$this->RegisterOnceTimer('HandleInstructions', 'IPS_RequestAction(' . (string)$this->InstanceID . ', "HandleInstructions","'.json_encode($data->Buffer).'");');
+			//$this->HandleInstructions($data->Buffer);
 		} else {
 			$msg = sprintf('Received invalid data: %s', json_encode($data));
 			$this->SendDebug(__FUNCTION__, $msg, 0);
@@ -315,7 +319,18 @@ class ChromecastReceiver extends IPSModule {
 							$this->SendDebug(__FUNCTION__, sprintf('MediaSessionId is %d', $mediaSessionId), 0);
 						}
 						if(isset($data->status[0]->playerState)) {
-							$this->SendDebug(__FUNCTION__, sprintf('PlayerState is "%s"', $data->status[0]->playerState), 0);
+							$playerState = $data->status[0]->playerState;
+							$this->SendDebug(__FUNCTION__, sprintf('PlayerState is "%s"', $playerState), 0);
+						}
+
+						if(isset($data->status[0]->media->metadata->title)) {
+							$title = $data->status[0]->media->metadata->title;
+							$this->SendDebug(__FUNCTION__, sprintf('Title is "%s"', $title), 0);
+						}
+
+						if(isset($data->status[0]->media->metadata->subtitle)) {
+							$subTitle = $data->status[0]->media->metadata->subtitle;
+							$this->SendDebug(__FUNCTION__, sprintf('Sub Title is "%s"', $subTitle), 0);
 						}
 						break;
 				}
