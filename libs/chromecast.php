@@ -42,7 +42,7 @@ trait Chromecast {
 		$this->SendDebug(__FUNCTION__, 'CONNECT with TransportId was sent to the device', 0);
 	}
 
-    public function Launch(string $AppId) {
+    private function Launch(string $AppId) {
         $value = $this->FetchBuffer('RequestId');
         $requestId=$value!==false?$value:0;
 

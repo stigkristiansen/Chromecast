@@ -191,9 +191,11 @@ class ChromecastReceiver extends IPSModule {
 					$this->SendDebug(__FUNCTION__, sprintf('Calling %s', $method), 0);
 					if(isset($instruction->Parameters)) {
 						$parameters = $instruction->Parameters;
-						call_user_function([$this, $method], $parameters);
+						//call_user_function([$this, $method], $parameters);
+						call_user_method($method, $this, $parameters);
 					} else {
-						call_user_function([$this, $method]);
+						//call_user_function([$this, $method]);
+						call_user_method($method, $this);
 					}
 				} else {
 					throw new Exception('Invalid instruction or missing function!');
