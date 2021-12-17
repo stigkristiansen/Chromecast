@@ -59,7 +59,7 @@ class ChromecastController extends IPSModule {
 			
 			$this->SetValue($Ident, $Value);
 
-			$command = '';
+			$function = '';
 			$parameter = '';
 			switch (strtolower($Ident)) {
 				case 'playback':
@@ -93,7 +93,6 @@ class ChromecastController extends IPSModule {
 			}
 			if(strlen($parameters)>0) {
 				$request[] = ['Function'=>$function, 'Parameters'=>$parameters];
-				
 			} else {
 				$request[] = ['Function'=>$function];
 			}
