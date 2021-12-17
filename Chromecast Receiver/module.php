@@ -187,15 +187,17 @@ class ChromecastReceiver extends IPSModule {
 		try {
 			foreach($Instructions as $instruction) {
 				if(isset($instruction->Function) && method_exists($this, $instruction->Function)) {
-					$method = $instruction->Function;
-					$this->SendDebug(__FUNCTION__, sprintf('Calling %s', $method), 0);
+					$function = $instruction->Function;
+					$this->SendDebug(__FUNCTION__, sprintf('Calling %s', $function), 0);
 					if(isset($instruction->Parameters)) {
 						$parameters = $instruction->Parameters;
-						//call_user_function([$this, $method], $parameters);
-						call_user_method($method, $this, $parameters);
+						if(is_array($parameters)) {
+							$result = call_user_func_array(array($this, $function), $parameters);
+						else {
+							throw new Exception('Parameters must be in an array!');		
+						}
 					} else {
-						//call_user_function([$this, $method]);
-						call_user_method($method, $this);
+						$result = call_user_func(array($this, $function));
 					}
 				} else {
 					throw new Exception('Invalid instruction or missing function!');
