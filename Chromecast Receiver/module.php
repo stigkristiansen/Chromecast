@@ -258,7 +258,7 @@ class ChromecastReceiver extends IPSModule {
 						}
 
 						if(isset($data->status->volume->level)) {
-							$level = ceil($data->status->volume->level *100);
+							$level = $data->status->volume->level *100;
 							$this->SendDebug(__FUNCTION__, sprintf('Volume is %F%%', $level), 0);
 						}
 
