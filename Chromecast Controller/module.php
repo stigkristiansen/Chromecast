@@ -12,14 +12,9 @@ class ChromecastController extends IPSModule {
 		$this->RegisterPropertyString('Name', '');
 		$this->RegisterPropertyString('Id', '');
 
-		$this->RegisterProfileIntegerEx('CCC.Playback', 'Execute', '', '', [
-			[0, '', '', -1],
-			[1, 'Play', '', -1],
-			[2, 'Pause', '', -1],
-			[3, 'Stop', '', -1]
-		]);
 
-		$this->RegisterVariableInteger('Playback', 'Action', 'CCC.Playback', 0);
+
+		$this->RegisterVariableInteger('Playback', 'Action', 'Playback', 0);
 		$this->EnableAction('Playback');
 
 		$this->RegisterVariableInteger('Volume', 'Volume', 'Intensity.100', 1);
