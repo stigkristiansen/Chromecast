@@ -172,7 +172,7 @@ class ChromecastReceiver extends IPSModule {
 
 	public function ForwardData($JSONString) {
 		$data = json_decode($JSONString);
-		$this->SendDebug(__FUNCTION__, 'Received for forwarding: ' . utf8_decode($data->Buffer), 0);
+		$this->SendDebug(__FUNCTION__, 'Received for forwarding: ' . json_encode($data->Buffer), 0);
 		
 		//$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => $data->Buffer]));
 
