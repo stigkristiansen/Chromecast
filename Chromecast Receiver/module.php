@@ -311,6 +311,7 @@ class ChromecastReceiver extends IPSModule {
 		return 'String data for device instance!';
 	}
 
+	
 	public function ReceiveData($JSONString) {
 		$data = json_decode($JSONString);
 		$this->SendDebug(__FUNCTION__, 'Received from parent: ' . utf8_decode($data->Buffer), 0);
