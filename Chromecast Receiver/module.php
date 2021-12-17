@@ -183,12 +183,28 @@ class ChromecastReceiver extends IPSModule {
 	}
 
 	private function HandleInstructions($Instructions) {
-		$this->SendDebug(__FUNCTION__, 'Instructions...', 0);
-		foreach($Instructions as $instruction) {
-			$this->SendDebug(__FUNCTION__, $instruction->Function, 0);
-		}
+		$this->SendDebug(__FUNCTION__, 'Handling instructions...', 0);
+		try {
+			foreach($Instructions as $instruction) {
+				if(isset($instruction->Function) && method_exists($this, $instruction->Function)) {
+					$method = $instruction->Function;
+					$this->SendDebug(__FUNCTION__, sprintf('Calling %s', $method), 0);
+					if(isset($instruction->Parameters)) {
+						$parameters = $instruction->Parameters;
+						call_user_function([$this, $method], $parameters);
+					} else {
+						call_user_function([$this, $method]);
+					}
+				} else {
+					throw new Exception('Invalid instruction or missing function!');
+				}
+			}
+		} catch(Exception $e) {
+			$msg = sprintf('An unexpected error occurred: %s',  $e->getMessage());
+			$this->SendDebug(__FUNCTION__, $msg, 0);
+			$this->LogMessage($msg, KL_ERROR);
+		} 
 	}
-
 
 	public function ReceiveData($JSONString) {
 		$data = json_decode($JSONString);
