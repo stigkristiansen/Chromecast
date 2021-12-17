@@ -31,7 +31,7 @@ class ChromecastController extends IPSModule {
 
 	public function Test() {
 		$this->RegisterProfileIntegerEx('CCC.Playback', 'Execute', '', '', [
-			[0, '', '', -1],
+			[0, ' ', '', -1],
 			[1, 'Play', '', -1],
 			[2, 'Pause', '', -1],
 			[3, 'Stop', '', -1]
