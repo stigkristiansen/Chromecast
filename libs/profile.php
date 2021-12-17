@@ -1,12 +1,12 @@
 <?php
 
 trait Profiles {
-    protected function DeleteProfile($Name) {
+    private function DeleteProfile($Name) {
         if(IPS_VariableProfileExists($Name))
             IPS_DeleteVariableProfile($Name);
     }
 
-    protected function RegisterProfileString($Name, $Icon, $Prefix, $Suffix) {
+    private function RegisterProfileString($Name, $Icon, $Prefix, $Suffix) {
 
         if (!IPS_VariableProfileExists($Name)) {
             IPS_CreateVariableProfile($Name, 3);
@@ -21,7 +21,7 @@ trait Profiles {
         IPS_SetVariableProfileText($Name, $Prefix, $Suffix);
     }
 
-    protected function RegisterProfileStringEx($Name, $Icon, $Prefix, $Suffix, $Associations) {
+    private function RegisterProfileStringEx($Name, $Icon, $Prefix, $Suffix, $Associations) {
         
         $this->RegisterProfileString($Name, $Icon, $Prefix, $Suffix);
 
@@ -45,7 +45,7 @@ trait Profiles {
         }
     }
 
-    protected function RegisterProfileBoolean($Name, $Icon, $Prefix, $Suffix) {
+    private function RegisterProfileBoolean($Name, $Icon, $Prefix, $Suffix) {
 
         if (!IPS_VariableProfileExists($Name)) {
             IPS_CreateVariableProfile($Name, 0);
@@ -60,7 +60,7 @@ trait Profiles {
         IPS_SetVariableProfileText($Name, $Prefix, $Suffix);
     }
 
-    protected function RegisterProfileBooleanEx($Name, $Icon, $Prefix, $Suffix, $Associations) {
+    private function RegisterProfileBooleanEx($Name, $Icon, $Prefix, $Suffix, $Associations) {
         
         $this->RegisterProfileBoolean($Name, $Icon, $Prefix, $Suffix);
 
@@ -84,7 +84,7 @@ trait Profiles {
         }
     }
     
-    protected function RegisterProfileInteger($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, $StepSize) {
+    private function RegisterProfileInteger($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, $StepSize) {
         if (!IPS_VariableProfileExists($Name)) {
             IPS_CreateVariableProfile($Name, 1);
         } else {
@@ -99,7 +99,7 @@ trait Profiles {
         IPS_SetVariableProfileValues($Name, $MinValue, $MaxValue, $StepSize);
     }
 
-    protected function RegisterProfileIntegerEx($Name, $Icon, $Prefix, $Suffix, $Associations) {
+    private function RegisterProfileIntegerEx($Name, $Icon, $Prefix, $Suffix, $Associations) {
         
         if (count($Associations) === 0) {
             $MinValue = 0;
@@ -131,7 +131,7 @@ trait Profiles {
         }
     }
 
-    protected function RegisterProfileFloat($Name, $Icon, $Prefix, $Suffix) {
+    private function RegisterProfileFloat($Name, $Icon, $Prefix, $Suffix) {
 
         if (!IPS_VariableProfileExists($Name)) {
             IPS_CreateVariableProfile($Name, 2);
@@ -146,7 +146,7 @@ trait Profiles {
         IPS_SetVariableProfileText($Name, $Prefix, $Suffix);
     }
 
-    protected function CreateProfileAssosiationList($List) {
+    private function CreateProfileAssosiationList($List) {
         $count = 0;
         foreach($List as $value) {
             $assosiations[] = [$count, $value,  '', -1];
@@ -156,7 +156,7 @@ trait Profiles {
         return $assosiations;
     }
 
-    protected function GetProfileAssosiationName($ProfileName, $Index) {
+    private function GetProfileAssosiationName($ProfileName, $Index) {
         $profile = IPS_GetVariableProfile($ProfileName);
     
         if($profile!==false) {
@@ -167,5 +167,5 @@ trait Profiles {
         } 
     
         return false;
-    
     }
+}
