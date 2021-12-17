@@ -90,7 +90,7 @@ class ChromecastController extends IPSModule {
 					break;
 			}
 			if(strlen($parameter)>0) {
-				$request = array('command' => $command, 'parameter' = $parameter);
+				$request = array('command' => $command, 'parameter' => $parameter);
 			} else {
 				$request = array('command' => $command);
 			}
