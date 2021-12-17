@@ -187,7 +187,7 @@ trait Chromecast {
             $volumeLevel = (float)$Level/100;
 
             $msg = new CastMessage();
-            $json = sprintf('{"type":"SET_VOLUME", "volume":{"level":%f}, "requestId":%d }',$volumeLevel, $requestId);
+            $json = sprintf('{"type":"SET_VOLUME", "volume":{"level":%F}, "requestId":%d }',$volumeLevel, $requestId);
             $urn = 'urn:x-cast:com.google.cast.receiver';
             $message = $msg->FormatMessage($urn, $json);
 
