@@ -83,7 +83,7 @@ class ChromecastController extends IPSModule {
 				case 'volume':
 					$this->SendDebug( __FUNCTION__ , 'Changing Volume...', 0);
 					if(is_numeric($Value)) {
-						$request[] = ['Function'=>'Volume', 'Parameters'=>$Value];
+						$request[] = ['Function'=>'Volume', 'Parameters'=>[$Value]];
 					} else {
 						throw new Exception('Invalid value for Volume. It should be a number between 0-100');	
 					}
