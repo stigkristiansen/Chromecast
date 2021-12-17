@@ -1,7 +1,7 @@
 <?php
 	declare(strict_types=1);
 
-	require_once(__DIR__ . "/../libs/traits.php");
+	require_once(__DIR__ . "/../libs/dnssd.php");
 
 	class ChromecastDiscovery extends IPSModule {
 		use ServiceDiscovery;
