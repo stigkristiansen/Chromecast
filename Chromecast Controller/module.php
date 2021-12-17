@@ -5,6 +5,8 @@ declare(strict_types=1);
 include __DIR__ . '/../libs/profile.php';
 
 class ChromecastController extends IPSModule {
+	use Profiles;
+
 	public function Create() {
 		//Never delete this line!
 		parent::Create();
