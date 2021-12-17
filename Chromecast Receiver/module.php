@@ -91,7 +91,7 @@ class ChromecastReceiver extends IPSModule {
 				$this->DelayedInit();
 				break;
 			case 'handleinstructions':
-				$this->HandleInstructions(json_decode($Value));
+				$this->HandleInstructions(json_decode(urldecode($Value)));
 				break;
 		}
 	}
@@ -177,8 +177,9 @@ class ChromecastReceiver extends IPSModule {
 		$data = json_decode($JSONString);
 		if(isset($data->Buffer) && is_array($data->Buffer)) {
 			$this->SendDebug(__FUNCTION__, sprintf('Received instruction(s) from child instance: %s', json_encode($data->Buffer)), 0);
-			$this->SendDebug(__FUNCTION__, 'IPS_RequestAction(' . (string)$this->InstanceID . ', "HandleInstructions","'.json_encode($data->Buffer).'");', 0);
-			$this->RegisterOnceTimer('HandleInstructions', 'IPS_RequestAction(' . (string)$this->InstanceID . ', "HandleInstructions","'.json_encode($data->Buffer).'");');
+			$script = 'IPS_RequestAction(' . (string)$this->InstanceID . ', "HandleInstructions","'.urlencode(json_encode($data->Buffer)).'");';
+			$this->SendDebug(__FUNCTION__, $script, 0);
+			$this->RegisterOnceTimer('HandleInstructions', $script);
 			//$this->HandleInstructions($data->Buffer);
 		} else {
 			$msg = sprintf('Received invalid data: %s', json_encode($data));
