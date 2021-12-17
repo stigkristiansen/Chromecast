@@ -68,33 +68,28 @@ class ChromecastController extends IPSModule {
 						case 0: 
 							return;
 						case 1:
-							$function = 'Play';
+							$request[] = ['Function'=>'Play'];
 							break;
 						case 2:
-							$function = 'Pause';
+							$request[] = ['Function'=>'Pause'];
 							break;
 						case 3:
-							$function = 'Stop';
+							$request[] = ['Function'=>'Stop'];
 							break;
 						default:
 							throw new Exception('Invalid value for Playback. Accepted values are 0,1,2,3');
-							
 					}
 					break;
 				case 'volume':
 					$this->SendDebug( __FUNCTION__ , 'Changing Volume...', 0);
 					if(is_numeric($Value)) {
-						$function = 'Volume';
-						$parameters = $Value;
+						$request[] = ['Function'=>'Volume', 'Parameters'=$Value];
 					} else {
 						throw new Exception('Invalid value for Volume. It should be a number between 0-100');	
 					}
 					break;
-			}
-			if(strlen($parameters)>0) {
-				$request[] = ['Function'=>$function, 'Parameters'=>$parameters];
-			} else {
-				$request[] = ['Function'=>$function];
+				default:
+					throw new Exception('Invalid Ident. It should be "Playback" or "Volume"');	
 			}
 
 			$this->SendDataToParent(json_encode(['DataID' => '{7F9B2C92-8242-882A-6C12-DA76767C9CA0}', 'Buffer' => $request]));
