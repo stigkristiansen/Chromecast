@@ -252,6 +252,11 @@ class ChromecastReceiver extends IPSModule {
 							$this->SendDebug(__FUNCTION__, sprintf('SessionId is "%s"', $sessionId), 0);
 						}
 
+						if(isset($data->status->volume->muted)) {
+							$muted = $data->status->volume->muted;
+							$this->SendDebug(__FUNCTION__, sprintf('Muted State is "%s"', $muted?'TRUE':'FALSE'), 0);
+						}
+
 						if(isset($data->status->applications[0]->transportId)) {
 							$oldTransportId = $this->FetchBuffer('TransportId');
 							$newTransportId = $data->status->applications[0]->transportId;
