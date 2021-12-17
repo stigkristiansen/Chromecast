@@ -74,7 +74,6 @@ class ChromecastReceiver extends IPSModule {
 		} else  {
 			$this->ConnectDevice();
 			$this->GetDeviceStatus();
-			$this->GetMediaStatus();
 		}
 	}
 	
@@ -193,19 +192,13 @@ class ChromecastReceiver extends IPSModule {
 		$value = $this->FetchBuffer('TransportId');
 		$transportId=$value!==false?$value:'';
 
-		$value = $this->FetchBuffer('RequestId');
-		$requestId=$value!==false?$value:0;
-
 		$msg = new CastMessage();
 		$msg->source_id = "sender-0";
 		$msg->receiver_id = $transportId;
 		$msg->urnnamespace = "urn:x-cast:com.google.cast.tp.connection";
 		$msg->payloadtype = 0;
-		$msg->payloadutf8 = '{"type":"CONNECT","requestId":'.$requestId.'}';
+		$msg->payloadutf8 = '{"type":"CONNECT"}';
 
-		$requestId++;
-		$this->UpdateBuffer('RequestId', $requestId);
-		
 		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
 		$this->SendDebug(__FUNCTION__, 'CONNECT with TransportId was sent to the device', 0);
 
@@ -401,6 +394,7 @@ class ChromecastReceiver extends IPSModule {
 								$this->SendDebug(__FUNCTION__, 'TransportId has changed. Connecting using new Id...', 0);
 								$this->UpdateBuffer('MediaStatusId', 0);
 								$this->ConnectDeviceTransport();
+								$this->GetMediaStatus();
 							}
 						}
 						break;
