@@ -98,7 +98,7 @@ class ChromecastReceiver extends IPSModule {
 	}
 
 	private function CheckIOConfig() {
-		$this->SendDebug(__FUNCTION__, 'Checking the devices configuration...', 0);
+		$this->SendDebug(__FUNCTION__, 'Checking the configuration of the Chromecast device...', 0);
 
 		$this->SetTimerInterval('CheckIOConfig', 60000*5); // Check config very 5 minutes
 		
@@ -148,6 +148,8 @@ class ChromecastReceiver extends IPSModule {
 						IPS_SetProperty($parentId, 'VerifyPeer', false);
 						IPS_SetProperty($parentId, "Open", true);
 						IPS_ApplyChanges($parentId);
+
+						$this->SendDebug(__FUNCTION__, 'Reconfigured the I/O instance to match the Chromecast device', 0);	
 					} else {
 						$this->SendDebug(__FUNCTION__, 'There is no change in the configuration', 0);	
 					}
@@ -311,7 +313,7 @@ class ChromecastReceiver extends IPSModule {
 		return 'String data for device instance!';
 	}
 
-	
+
 	public function ReceiveData($JSONString) {
 		$data = json_decode($JSONString);
 		$this->SendDebug(__FUNCTION__, 'Received from parent: ' . utf8_decode($data->Buffer), 0);
