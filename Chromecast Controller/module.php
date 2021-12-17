@@ -97,7 +97,7 @@ class ChromecastController extends IPSModule {
 				$request[] = ['Function'=>$function];
 			}
 
-			$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => $request]));
+			$this->SendDataToParent(json_encode(['DataID' => '{7F9B2C92-8242-882A-6C12-DA76767C9CA0}', 'Buffer' => $request]));
 
 		} catch(Exception $e) {
 			$msg = sprintf('RequestAction failed. The error was "%s"',  $e->getMessage());
