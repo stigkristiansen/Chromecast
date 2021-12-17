@@ -74,9 +74,9 @@ class ChromecastReceiver extends IPSModule {
 		} else  {
 			$this->ConnectDevice();
 			$this->GetDeviceStatus();
+			$this->GetMediaStatus();
 		}
 	}
-
 	
 	public function RequestAction($Ident, $Value) {
 		switch (strtolower($Ident)) {
@@ -96,7 +96,6 @@ class ChromecastReceiver extends IPSModule {
 		$this->SetTimerInterval('DelayedInit', 0);
 		$this->SetTimerInterval('PingPong', 5000);
 		$this->ConnectDevice();
-		$this->GetDeviceStatus();
 	}
 
 	private function CheckIOConfig() {
@@ -186,40 +185,41 @@ class ChromecastReceiver extends IPSModule {
 		$msg->payloadtype = 0;
 		$msg->payloadutf8 = '{"type":"CONNECT"}';
 
-		//$time = time();
-		//$this->UpdateBuffer('LastActiveTime', $time);
-		//$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is %d', $time),0);
-		
 		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
 		$this->SendDebug(__FUNCTION__, ' CONNECT was sent to the device', 0);
 	}
 
 	private function ConnectDeviceTransport() {
-		$transportId = $this->FetchBuffer('TransportId');
+		$value = $this->FetchBuffer('TransportId');
+		$transportId=$value!==false?$value:'';
+
+		$value = $this->FetchBuffer('RequestId');
+		$requestId=$value!==false?$value:0;
+
 		$msg = new CastMessage();
 		$msg->source_id = "sender-0";
 		$msg->receiver_id = $transportId;
 		$msg->urnnamespace = "urn:x-cast:com.google.cast.tp.connection";
 		$msg->payloadtype = 0;
-		$msg->payloadutf8 = '{"type":"CONNECT"}';
+		$msg->payloadutf8 = '{"type":"CONNECT","requestId":'.$requestId.'}';
 
-		//$time = time();
-		//$this->UpdateBuffer('LastActiveTime', $time);
-		//$this->SendDebug(__FUNCTION__, sprintf('Updated "LastActiveTime". New value is %d', $time),0);
+		$requestId++;
+		$this->UpdateBuffer('RequestId', $requestId);
 		
 		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
-		$this->SendDebug(__FUNCTION__, ' CONNECT with TransportId was sent to the device', 0);
+		$this->SendDebug(__FUNCTION__, 'CONNECT with TransportId was sent to the device', 0);
 
 	}
 
 	private function GetDeviceStatus() {
+		$value = $this->FetchBuffer('RequestId');
+		$requestId=$value!==false?$value:0;
+		
 		$msg = new CastMessage();
 		$msg->source_id = "sender-0";
 		$msg->receiver_id = "receiver-0";
 		$msg->urnnamespace = "urn:x-cast:com.google.cast.receiver";
 		$msg->payloadtype = 0;
-		$value = $this->FetchBuffer('RequestId');
-		$requestId=$value!==false?$value:0;
 		$msg->payloadutf8 = sprintf('{"type":"GET_STATUS","requestId":%d}', $requestId);
 		
 		$requestId++;
@@ -229,7 +229,7 @@ class ChromecastReceiver extends IPSModule {
 		$this->SendDebug(__FUNCTION__, sprintf('GET_STATUS was sent to the receiver with RequestId %d', $requestId), 0);
 	}
 
-	public function GetMediaStatus() {
+	private function GetMediaStatus() {
 		$value = $this->FetchBuffer('TransportId');
 		$transportId=$value!==false?$value:'';
 
@@ -262,9 +262,10 @@ class ChromecastReceiver extends IPSModule {
 		$message = $msg->FormatMessage("urn:x-cast:com.google.cast.receiver", $json);
 
 		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($message)]));
+		$this->SendDebug(__FUNCTION__, 'STOP was sent', 0);
 	}
 
-	public function Pause() {
+	private function Pause() {
 		$value = $this->FetchBuffer('RequestId');
 		$requestId=$value!==false?$value:0;
 
@@ -283,9 +284,10 @@ class ChromecastReceiver extends IPSModule {
 		$message = $msg->FormatMessage($urn, $json, $transportId);
 
 		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($message)]));
+		$this->SendDebug(__FUNCTION__, 'PAUSE was sent', 0);
 	}
 
-	public function Play() {
+	private function Play() {
 		$value = $this->FetchBuffer('RequestId');
 		$requestId=$value!==false?$value:0;
 
@@ -304,8 +306,8 @@ class ChromecastReceiver extends IPSModule {
 		$message = $msg->FormatMessage($urn, $json, $transportId);
 
 		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($message)]));
+		$this->SendDebug(__FUNCTION__, 'PLAY was sent', 0);
 	}
-
 
 	public function ForwardData($JSONString) {
 		$data = json_decode($JSONString);
@@ -397,6 +399,7 @@ class ChromecastReceiver extends IPSModule {
 
 							if($oldTransportId!=$newTransportId) {
 								$this->SendDebug(__FUNCTION__, 'TransportId has changed. Connecting using new Id...', 0);
+								$this->UpdateBuffer('MediaStatusId', 0);
 								$this->ConnectDeviceTransport();
 							}
 						}
