@@ -180,12 +180,14 @@ trait Chromecast {
 	}
 
     public function Volume(int $Level) {
-        if($Level >=0 && $Level<=100) {
+        if($Level>=0 && $Level<=100) {
             $value = $this->FetchBuffer('RequestId');
             $requestId=$value!==false?$value:0;
 
+            $volumeLevel = (float)$Level/100;
+
             $msg = new CastMessage();
-            $json = sprintf('{"type":"SET_VOLUME", "volume":{"level":%d}, "requestId":%d }',$Level, $requestId);
+            $json = sprintf('{"type":"SET_VOLUME", "volume":{"level":%f}, "requestId":%d }',$volumeLevel, $requestId);
             $urn = 'urn:x-cast:com.google.cast.receiver';
             $message = $msg->FormatMessage($urn, $json);
 
@@ -193,7 +195,7 @@ trait Chromecast {
             $this->UpdateBuffer('RequestId', $requestId);
 
             $this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($message)]));
-            $this->SendDebug(__FUNCTION__, sprintf('VOLUME LEVEL was sent with value %d', $Level), 0);
+            $this->SendDebug(__FUNCTION__, sprintf('VOLUME LEVEL was sent with value %f', $volumeLevel), 0);
         } else  {
             $this->SendDebug(__FUNCTION__, sprintf('Invalid VOLUME LEVEL %d!', $Level), 0);
         }
