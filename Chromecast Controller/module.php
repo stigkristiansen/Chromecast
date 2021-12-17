@@ -60,7 +60,7 @@ class ChromecastController extends IPSModule {
 			$this->SetValue($Ident, $Value);
 
 			$function = '';
-			$parameter = '';
+			$parameters = '';
 			switch (strtolower($Ident)) {
 				case 'playback':
 					$this->SendDebug( __FUNCTION__ , 'Changing Playback...', 0);
