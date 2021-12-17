@@ -193,7 +193,7 @@ class ChromecastReceiver extends IPSModule {
 						$parameters = $instruction->Parameters;
 						if(is_array($parameters)) {
 							$result = call_user_func_array(array($this, $function), $parameters);
-						else {
+						} else {
 							throw new Exception('Parameters must be in an array!');		
 						}
 					} else {
