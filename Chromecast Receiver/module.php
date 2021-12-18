@@ -96,6 +96,7 @@ class ChromecastReceiver extends IPSModule {
 				break;
 			case 'getmediastatus':
 				$this->GetMediaStatus();
+				$this->SetTimerInterval('GetMediaStatus', 60000);
 				break;
 		}
 	}
@@ -368,7 +369,7 @@ class ChromecastReceiver extends IPSModule {
 							$playerState = $data->status[0]->playerState;
 							$status['PlayerState'] = $playerState;
 							if(strtolower($playerState)=='playing') {
-								$this->SetTimerInterval('GetMediaStatus', 60000);
+								$this->SetTimerInterval('GetMediaStatus', 1);
 							} else {
 								$this->SetTimerInterval('GetMediaStatus', 0);
 							}
