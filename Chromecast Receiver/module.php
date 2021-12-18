@@ -280,8 +280,8 @@ class ChromecastReceiver extends IPSModule {
 						$this->SendDebug(__FUNCTION__, 'Analyzing "POSDUR"...', 0);
 						if(isset($data->position)) {
 							$position = $data->position;
-							$status['CurrentTime'] = $position;
-							$this->SendDebug(__FUNCTION__, sprintf('CurrentTime is %s', (string)$position), 0);
+							//$status['CurrentTime'] = $position;
+							//$this->SendDebug(__FUNCTION__, sprintf('CurrentTime is %s', (string)$position), 0);
 						}
 						
 						if(isset($data->duration)) {
