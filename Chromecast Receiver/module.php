@@ -236,7 +236,9 @@ class ChromecastReceiver extends IPSModule {
 			$handleData = true;
 		} else if(preg_match("/urn:x-cast:com.google.cast.tp.connection/s", $buffer)) {
 			$handleData = true;
-		}
+		} else if(preg_match("/urn:x-cast:tv.viaplay.chromecast/s", $buffer)) {
+			$handleData = true;
+		} 
 
 		if(!$handleData) {
 			$this->SendDebug(__FUNCTION__, 'Incoming data is not handled', 0);	
@@ -264,9 +266,20 @@ class ChromecastReceiver extends IPSModule {
 			if(isset($data->type)) {
 				$status = [];
 				switch(strtolower($data->type)) {
-					case 'close':
-						$status['DisplayName'] = '';
-						$status['Title'] = '';
+					case 'posdur': 
+						$this->SendDebug(__FUNCTION__, 'Analyzing "POSDUR"...', 0);
+						if(isset($data->position)) {
+							$position = $data->position;
+							$status['CurrentTime'] = $position;
+							$this->SendDebug(__FUNCTION__, sprintf('CurrentTime is %s', (string)$position), 0);
+						}
+						
+						if(isset($data->duration)) {
+							$duration = $data->duration;
+							$status['Duration'] = $duration;
+							$this->SendDebug(__FUNCTION__, sprintf('Duration is %s', (string)$duration), 0);
+						}
+						break;
 					case 'ping':
 						$this->SendDebug(__FUNCTION__, 'Sending PONG to device', 0);
 						$this->SendPingPong('PONG');
