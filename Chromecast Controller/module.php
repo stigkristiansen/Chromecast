@@ -192,6 +192,7 @@ class ChromecastController extends IPSModule {
 				$this->SetValue('Duration', '');
 				$this->SetValue('CurrentTime', '');
 				$this->SetValue('TimeLeft', '');
+				$this->SetValueEx('Position', 0);
 			}
 		}
 
@@ -215,8 +216,12 @@ class ChromecastController extends IPSModule {
 		if($current>0 && $duration>0) {
 			$left = $duration-$current;
 			$this->SetValueEx('TimeLeft', $this->secondsToString($left));
+			
+			$position = (int)(ceil($current/$duration*100);
+			$this->SetValueEx('Position', $position);
 		} else {
 			$this->SetValueEx('TimeLeft', '');
+			$this->SetValueEx('Position', 0);
 		}
 	}
 
