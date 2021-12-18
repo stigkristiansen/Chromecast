@@ -161,7 +161,7 @@ trait Chromecast {
 		$this->SendDebug(__FUNCTION__, 'PLAY was sent', 0);
 	}
 
-    public function Mute(bool $State) {
+    private function Mute(bool $State) {
 		$value = $this->FetchBuffer('RequestId');
 		$requestId=$value!==false?$value:0;
 
@@ -179,7 +179,7 @@ trait Chromecast {
 		$this->SendDebug(__FUNCTION__, sprintf('MUTE was sent with value %s', $muteState), 0);
 	}
 
-    public function Volume(int $Level) {
+    private function Volume(int $Level) {
         if($Level>=0 && $Level<=100) {
             $value = $this->FetchBuffer('RequestId');
             $requestId=$value!==false?$value:0;
