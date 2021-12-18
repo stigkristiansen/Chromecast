@@ -155,6 +155,7 @@ class ChromecastController extends IPSModule {
 				
 				switch(strtolower($playerState)) {
 					case 'playing':
+					case 'buffering':
 						$state = 1;
 						break;
 					case 'paused':
