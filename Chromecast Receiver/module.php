@@ -260,6 +260,7 @@ class ChromecastReceiver extends IPSModule {
 			$this->SendDebug(__FUNCTION__, sprintf('The data is "%s"', $result[0]), 0);
 
 			if(isset($data->type)) {
+				$status = [];
 				switch(strtolower($data->type)) {
 					case 'ping':
 						$this->SendDebug(__FUNCTION__, 'Sending PONG to device', 0);
@@ -290,12 +291,14 @@ class ChromecastReceiver extends IPSModule {
 
 						if(isset($data->status->volume->muted)) {
 							$muted = $data->status->volume->muted;
+							$status['Mute'] = $muted;
 							$this->SendDebug(__FUNCTION__, sprintf('Muted State is "%s"', $muted?'TRUE':'FALSE'), 0);
 						}
-
+						
 						if(isset($data->status->volume->level)) {
-							//$level = $data->status->volume->level;
-							$this->SendDebug(__FUNCTION__, sprintf('Volume is %s', (string)$data->status->volume->level), 0);
+							$level = $data->status->volume->level;
+							$status['Volume'] = $level;
+							$this->SendDebug(__FUNCTION__, sprintf('Volume is %s', (string)$level), 0);
 						}
 
 						if(isset($data->status->applications[0]->transportId)) {
@@ -322,20 +325,27 @@ class ChromecastReceiver extends IPSModule {
 						}
 						if(isset($data->status[0]->playerState)) {
 							$playerState = $data->status[0]->playerState;
+							$status['PlayerState'] = $playerState;
 							$this->SendDebug(__FUNCTION__, sprintf('PlayerState is "%s"', $playerState), 0);
 						}
 
 						if(isset($data->status[0]->media->metadata->title)) {
 							$title = $data->status[0]->media->metadata->title;
+							$status[] = $title;
 							$this->SendDebug(__FUNCTION__, sprintf('Title is "%s"', $title), 0);
 						}
 
 						if(isset($data->status[0]->media->metadata->subtitle)) {
 							$subTitle = $data->status[0]->media->metadata->subtitle;
+							$status[] = $subTitle;
 							$this->SendDebug(__FUNCTION__, sprintf('Sub Title is "%s"', $subTitle), 0);
 						}
 						break;
 				}
+				if(count($status)>0) {
+					$this->SendDataToChildren(json_encode(['DataID' => '{3FBC907B-E487-DC82-2730-11F8CBD494A8}', 'Buffer' => $status]));
+				}
+				
 			} 
 			
 		} else {

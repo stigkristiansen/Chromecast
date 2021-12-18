@@ -100,7 +100,7 @@ class ChromecastController extends IPSModule {
 					if(is_bool($Value)) {
 						$request[] = ['Function'=>'Mute', 'Parameters'=>[$Value]];
 					} else {
-						throw new Exception('Invalid value for Mute. It should be boolean');	
+						throw new Exception('Invalid value for Mute. It should be "True" or "False"');	
 					}
 					break;
 				default:
@@ -118,6 +118,6 @@ class ChromecastController extends IPSModule {
 
 	public function ReceiveData($JSONString) {
 		$data = json_decode($JSONString);
-		IPS_LogMessage('Device RECV', utf8_decode($data->Buffer));
+		$this->SendDebug( __FUNCTION__ , 'Received status: '. $JSONString, 0);
 	}
 }
