@@ -286,8 +286,8 @@ class ChromecastReceiver extends IPSModule {
 						
 						if(isset($data->duration)) {
 							$duration = $data->duration;
-							$status['Duration'] = $duration;
-							$this->SendDebug(__FUNCTION__, sprintf('Duration is %s', (string)$duration), 0);
+							//$status['Duration'] = $duration;
+							//$this->SendDebug(__FUNCTION__, sprintf('Duration is %s', (string)$duration), 0);
 						}
 						break;
 					case 'ping':
