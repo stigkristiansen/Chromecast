@@ -130,7 +130,7 @@ class ChromecastController extends IPSModule {
 		if(isset($data->Buffer->Volume)) {
 			$level = $data->Buffer->Volume;
 			if(is_numeric($level)) {
-				$this->SetValue('Volume', $level);
+				$this->SetValue('Volume', (int)ceil($level*100));
 			}
 		}
 
