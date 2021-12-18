@@ -43,10 +43,7 @@ class ChromecastReceiver extends IPSModule {
 	public function ApplyChanges() {
 		//Never delete this line!
 		parent::ApplyChanges();
-
-		$this->SendDebug(__FUNCTION__, 'Starting up...', 0);
-		$this->LogMessage('Starting up...', KL_ERROR);
-
+		
 		$this->RegisterMessage(0, IPS_KERNELMESSAGE);
 
 		if (IPS_GetKernelRunlevel() == KR_READY) {
@@ -57,17 +54,19 @@ class ChromecastReceiver extends IPSModule {
 	public function MessageSink($TimeStamp, $SenderID, $Message, $Data) {
         parent::MessageSink($TimeStamp, $SenderID, $Message, $Data);
 
-		$this->LogMessage(sprintf('Received a message: %d - %d - %d', $SenderID, $Message, $data[0]), KL_ERROR);
 		$this->SendDebug(__FUNCTION__, sprintf('Received a message: %d - %d - %d', $SenderID, $Message, $data[0]), 0);
 
 		if ($Message == IPS_KERNELMESSAGE && $Data[0] == KR_READY) {
-            $this->SendDebug(__FUNCTION__, 'Detected "Kernel Ready"! Initialzing...', 0);
+            $this->LogMessage('Detected "Kernel Ready"!', KL_NOTIFY);
 			$this->Init();
 		}
     }
 
 	private function Init(bool $NewDiscover=true) {
-		$this->SendDebug(__FUNCTION__, 'Resetting buffers...', 0);
+		$msg = 'Initializing...';
+		
+		$this->LogMessage($msg, KL_NOTIFY);
+		$this->SendDebug(__FUNCTION__, $msg, 0);
 		
 		$this->UpdateBuffer('RequestId', 0);
 		$this->UpdateBuffer('TransportId', '');
@@ -76,6 +75,9 @@ class ChromecastReceiver extends IPSModule {
 		$this->UpdateBuffer('Message', '');
 		$this->UpdateBuffer('LastActiveTime', time());
 
+		$command['Command'] = 'Reset';
+		$this->SendDataToChildren(json_encode(['DataID' => '{3FBC907B-E487-DC82-2730-11F8CBD494A8}', 'Buffer' => $command]));
+
 		if($NewDiscover) {
 			$this->SetTimerInterval('CheckIOConfig', 1000);
 			$this->SetTimerInterval('DelayedInit', 10000);
@@ -83,6 +85,13 @@ class ChromecastReceiver extends IPSModule {
 			$this->ConnectDevice();
 			$this->GetDeviceStatus();
 		}
+	}
+
+	private function DelayedInit() {
+		$this->SetTimerInterval('DelayedInit', 0);
+		$this->SetTimerInterval('PingPong', 5000);
+		$this->ConnectDevice();
+		$this->GetDeviceStatus();
 	}
 	
 	public function RequestAction($Ident, $Value) {
@@ -105,16 +114,6 @@ class ChromecastReceiver extends IPSModule {
 				break;
 		}
 	}
-
-	private function DelayedInit() {
-		$this->SetTimerInterval('DelayedInit', 0);
-		$this->SetTimerInterval('PingPong', 5000);
-		$this->ConnectDevice();
-
-		$command['Command'] = 'Reset';
-		$this->SendDataToChildren(json_encode(['DataID' => '{3FBC907B-E487-DC82-2730-11F8CBD494A8}', 'Buffer' => $command]));
-	}
-
 
 	private function CheckIOConfig() {
 		$this->SendDebug(__FUNCTION__, 'Checking the configuration of the Chromecast device...', 0);
