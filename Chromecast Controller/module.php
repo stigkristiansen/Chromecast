@@ -119,5 +119,53 @@ class ChromecastController extends IPSModule {
 	public function ReceiveData($JSONString) {
 		$data = json_decode($JSONString);
 		$this->SendDebug( __FUNCTION__ , 'Received status: '. $JSONString, 0);
+		
+		if(isset($data->Buffer->Mute)) {
+			$state = $data->Buffer->Mute;
+			if(is_boo($state)) {
+				$this->SetValue('Mute', $state);
+			}
+		}
+
+		if(isset($data->Buffer->Volume)) {
+			$level = $data->Buffer->Mute;
+			if(is_numeric($level)) {
+				$this->SetValue('Volume', $level);
+			}
+		}
+
+		if(isset($data->Buffer->Title)) {
+			$title = $data->Buffer->Title;
+			if(is_string($level)) {
+				$this->SetValue('NowPlaying', $title);
+			}
+		}
+
+		if(isset($data->Buffer->Title)) {
+			$title = $data->Buffer->Title;
+			if(is_string($level)) {
+				$this->SetValue('NowPlaying', $title);
+			}
+		}
+
+		if(isset($data->Buffer->PlayerState)) {
+			$playerState = $data->Buffer->PlayerState;
+			if(is_string($playerState)) {
+				
+				switch(strtolower($playerState)) {
+					case 'playing':
+						$state = 1;
+						break;
+					case 'paused':
+						$state = 2;
+						break;
+					default:
+						$state = 0;
+				}
+
+				$this->SetValue('Playback', $state);
+			}
+		}
+
 	}
 }
