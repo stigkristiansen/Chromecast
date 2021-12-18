@@ -197,7 +197,7 @@ class ChromecastController extends IPSModule {
 			}
 		}
 
-		$duration = 0;
+		
 		if(isset($data->Buffer->Duration)) {
 			$duration = $data->Buffer->Duration;
 			if(is_numeric($duration)) {
@@ -211,12 +211,15 @@ class ChromecastController extends IPSModule {
 			$current = $data->Buffer->CurrentTime;
 			if(is_numeric($current)) {
 				$this->SetValueEx('CurrentTime', $this->secondsToString($current));
+			} else {
+				$current = 0;
 			}
 		}
 
+		$duration = $this->FetchBuffer('Duration');
 		if($current>0 && $duration>0) {
-			$left = $duration-$current;
-			$this->SetValueEx('TimeLeft', $this->secondsToString($left));
+			$timeLeft = $duration-$current;
+			$this->SetValueEx('TimeLeft', $this->secondsToString($timeLeft));
 			
 			$position = (int)ceil($current/$duration*100);
 			$this->SetValueEx('Position', $position);
@@ -231,10 +234,12 @@ class ChromecastController extends IPSModule {
 		$this->SetValue('NowPlaying', '');
 		$this->SetValue('Status', '');
 		$this->SetValue('Playback', 0);
-		$this->SetValue('Duration', '');
 		$this->SetValue('CurrentTime', '');
 		$this->SetValue('TimeLeft', '');
 		$this->SetValueEx('Position', 0);
+		
+		$this->SetValue('Duration', '');
+		$this->UpdateBuffer('Duration', 0);
 	}
 
 	private function secondsToString(float $Seconds, bool $ShowSeconds=false) {
