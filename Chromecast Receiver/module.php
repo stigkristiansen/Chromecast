@@ -45,6 +45,7 @@ class ChromecastReceiver extends IPSModule {
 		parent::ApplyChanges();
 
 		$this->SendDebug(__FUNCTION__, 'Starting up...', 0);
+		$this->LogMessage('Starting up...'), KL_ERROR);
 
 		$this->RegisterMessage($this->InstanceID, IPS_KERNELMESSAGE);
 
@@ -56,6 +57,7 @@ class ChromecastReceiver extends IPSModule {
 	public function MessageSink($TimeStamp, $SenderID, $Message, $Data) {
         parent::MessageSink($TimeStamp, $SenderID, $Message, $Data);
 
+		$this->LogMessage(sprintf('Received a message: %d - %d - %d', $SenderID, $Message, $data[0]), KL_ERROR);
 		$this->SendDebug(__FUNCTION__, sprintf('Received a message: %d - %d - %d', $SenderID, $Message, $data[0]), 0);
 
 		if ($Message == IPS_KERNELMESSAGE && $Data[0] == KR_READY) {
