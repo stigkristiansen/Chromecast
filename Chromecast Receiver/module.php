@@ -331,13 +331,13 @@ class ChromecastReceiver extends IPSModule {
 
 						if(isset($data->status[0]->media->metadata->title)) {
 							$title = $data->status[0]->media->metadata->title;
-							$status[] = $title;
+							$status['Title'] = $title;
 							$this->SendDebug(__FUNCTION__, sprintf('Title is "%s"', $title), 0);
 						}
 
 						if(isset($data->status[0]->media->metadata->subtitle)) {
 							$subTitle = $data->status[0]->media->metadata->subtitle;
-							$status[] = $subTitle;
+							$status['SubTitle'] = $subTitle;
 							$this->SendDebug(__FUNCTION__, sprintf('Sub Title is "%s"', $subTitle), 0);
 						}
 						break;
