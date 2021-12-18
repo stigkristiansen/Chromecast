@@ -41,7 +41,7 @@ class ChromecastController extends IPSModule {
 
 		$this->ForceParent('{1AA6E1C3-E241-F658-AEC5-F8389B414A0C}');
 		
-		$this->RegisterTimer('PingPong', 0, 'IPS_RequestAction(' . (string)$this->InstanceID . ', "ResetPlaybackState", 0);'); 
+		$this->RegisterTimer('ResetPlaybackState', 0, 'IPS_RequestAction(' . (string)$this->InstanceID . ', "ResetPlaybackState", 0);'); 
 	}
 
 	public function Destroy() {
