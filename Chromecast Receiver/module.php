@@ -110,6 +110,7 @@ class ChromecastReceiver extends IPSModule {
 		$command['Command'] = 'Reset';
 		$this->SendDataToChildren(json_encode(['DataID' => '{3FBC907B-E487-DC82-2730-11F8CBD494A8}', 'Buffer' => $command]));
 	}
+	
 
 	private function CheckIOConfig() {
 		$this->SendDebug(__FUNCTION__, 'Checking the configuration of the Chromecast device...', 0);
