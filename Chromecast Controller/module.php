@@ -129,7 +129,7 @@ class ChromecastController extends IPSModule {
 
 	public function ReceiveData($JSONString) {
 		$data = json_decode($JSONString);
-		$this->SendDebug( __FUNCTION__ , 'Received status: '. $JSONString, 0);
+		$this->SendDebug( __FUNCTION__ , 'Received status: '. json_encode($data->Buffer), 0);
 		
 		if(isset($data->Buffer->Mute)) {
 			$state = $data->Buffer->Mute;
