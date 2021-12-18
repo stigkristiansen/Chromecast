@@ -234,6 +234,8 @@ class ChromecastReceiver extends IPSModule {
 			$handleData = true;
 		} else if(preg_match("/urn:x-cast:com.google.cast.tp.heartbeat/s", $buffer)) {
 			$handleData = true;
+		} else if(preg_match("/urn:x-cast:com.google.cast.tp.connection/s", $buffer)) {
+			$handleData = true;
 		}
 
 		if(!$handleData) {
@@ -262,6 +264,9 @@ class ChromecastReceiver extends IPSModule {
 			if(isset($data->type)) {
 				$status = [];
 				switch(strtolower($data->type)) {
+					case 'close':
+						$status['DisplayName'] = '';
+						$status['Title'] = '';
 					case 'ping':
 						$this->SendDebug(__FUNCTION__, 'Sending PONG to device', 0);
 						$this->SendPingPong('PONG');
