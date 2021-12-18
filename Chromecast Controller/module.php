@@ -3,9 +3,11 @@
 declare(strict_types=1);
 
 include __DIR__ . '/../libs/profile.php';
+include __DIR__ . '/../libs/buffer.php';
 
 class ChromecastController extends IPSModule {
 	use Profiles;
+	use Buffer;
 
 	public function Create() {
 		//Never delete this line!
@@ -42,6 +44,9 @@ class ChromecastController extends IPSModule {
 		$this->RegisterVariableString('Duration', 'Duration', '', 6);
 		$this->RegisterVariableString('CurrentTime', 'Current', '', 7);
 		$this->RegisterVariableString('TimeLeft', 'Time left', '', 8);
+
+		$this->RegisterVariableInteger('Position', 'Position', 'Intensity.100', 9);
+		$this->EnableAction('Position');
 
 		$this->ForceParent('{1AA6E1C3-E241-F658-AEC5-F8389B414A0C}');
 		
@@ -118,6 +123,18 @@ class ChromecastController extends IPSModule {
 						throw new Exception('Invalid value for Mute. It should be "True" or "False"');	
 					}
 					break;
+				case 'position':
+					$this->SendDebug( __FUNCTION__ , 'Changing Position...', 0);
+					if(is_numeric($Value)) {
+						$duration = $this->FetchBuffer('Duration');
+						$newPosition = $duration/100*$Value;
+						if($newPosition>0) {
+							$request[] = ['Function'=>'Seek', 'Parameters'=>[$newPosition]];
+						}
+					} else {
+						throw new Exception('Invalid value for Position. It should be a number between 0-100');	
+					}
+					break;
 				default:
 					throw new Exception('Invalid Ident. It should be "Playback", "Volume" or "Mute"');	
 			}
@@ -183,6 +200,7 @@ class ChromecastController extends IPSModule {
 			$duration = $data->Buffer->Duration;
 			if(is_numeric($duration)) {
 				$this->SetValueEx('Duration', $this->secondsToString($duration));
+				$this->UpdateBuffer('Duration', $duration);
 			}
 		}
 
