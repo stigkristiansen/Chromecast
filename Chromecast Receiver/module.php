@@ -96,8 +96,8 @@ class ChromecastReceiver extends IPSModule {
 				$this->HandleInstructions(json_decode(urldecode($Value)));
 				break;
 			case 'getmediastatus':
-				$this->GetMediaStatus();
 				$this->SetTimerInterval('GetMediaStatus', 60000);
+				$this->GetMediaStatus();
 				break;
 		}
 	}
@@ -110,7 +110,7 @@ class ChromecastReceiver extends IPSModule {
 		$command['Command'] = 'Reset';
 		$this->SendDataToChildren(json_encode(['DataID' => '{3FBC907B-E487-DC82-2730-11F8CBD494A8}', 'Buffer' => $command]));
 	}
-	
+
 
 	private function CheckIOConfig() {
 		$this->SendDebug(__FUNCTION__, 'Checking the configuration of the Chromecast device...', 0);
@@ -373,8 +373,11 @@ class ChromecastReceiver extends IPSModule {
 						if(isset($data->status[0]->playerState)) {
 							$playerState = $data->status[0]->playerState;
 							$status['PlayerState'] = $playerState;
+							
 							if(strtolower($playerState)=='playing') {
-								$this->SetTimerInterval('GetMediaStatus', 1);
+								if($this->GetTimerInterval('GetMediaStatus')==0) {
+									$this->SetTimerInterval('GetMediaStatus', 1);
+								}
 							} else {
 								$this->SetTimerInterval('GetMediaStatus', 0);
 							}
