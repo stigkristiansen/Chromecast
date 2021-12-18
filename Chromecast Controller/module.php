@@ -179,14 +179,14 @@ class ChromecastController extends IPSModule {
 		if(isset($data->Buffer->Duration)) {
 			$duration = $data->Buffer->Duration;
 			if(is_numeric($duration)) {
-				$this->SetValue('Duration', $this->secondsToString($duration));
+				$this->SetValueEx('Duration', $this->secondsToString($duration));
 			}
 		}
 
 		if(isset($data->Buffer->CurrentTime)) {
 			$current = $data->Buffer->CurrentTime;
 			if(is_numeric($current)) {
-				$this->SetValue('CurrentTime', $this->secondsToString($current));
+				$this->SetValueEx('CurrentTime', $this->secondsToString($current));
 			}
 		}
 	}
@@ -196,5 +196,12 @@ class ChromecastController extends IPSModule {
 		$h = floor(($Seconds%86400)/3600);
 		
 		return sprintf('%d h %d min', $h, $m);
+	}
+
+	private function SetValueEx(string $Ident, $Value) {
+		$oldValue = $this->GetValue($Ident);
+		if($oldValue!=$Value) {
+			$this->SetValue($Ident, $Value);
+		}
 	}
 }
