@@ -128,7 +128,7 @@ class ChromecastController extends IPSModule {
 		}
 
 		if(isset($data->Buffer->Volume)) {
-			$level = $data->Buffer->Mute;
+			$level = $data->Buffer->Volume;
 			if(is_numeric($level)) {
 				$this->SetValue('Volume', $level);
 			}
@@ -141,17 +141,10 @@ class ChromecastController extends IPSModule {
 			}
 		}
 
-		if(isset($data->Buffer->Title)) {
-			$title = $data->Buffer->Title;
-			if(is_string($level)) {
-				$this->SetValue('NowPlaying', $title);
-			}
-		}
 
 		if(isset($data->Buffer->PlayerState)) {
 			$playerState = $data->Buffer->PlayerState;
 			if(is_string($playerState)) {
-				
 				switch(strtolower($playerState)) {
 					case 'playing':
 						$state = 1;
@@ -162,7 +155,6 @@ class ChromecastController extends IPSModule {
 					default:
 						$state = 0;
 				}
-
 				$this->SetValue('Playback', $state);
 			}
 		}
