@@ -217,7 +217,7 @@ class ChromecastController extends IPSModule {
 			$left = $duration-$current;
 			$this->SetValueEx('TimeLeft', $this->secondsToString($left));
 			
-			$position = (int)(ceil($current/$duration*100);
+			$position = (int)ceil($current/$duration*100);
 			$this->SetValueEx('Position', $position);
 		} else {
 			$this->SetValueEx('TimeLeft', '');
