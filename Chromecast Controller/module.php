@@ -21,15 +21,23 @@ class ChromecastController extends IPSModule {
 			[3, 'Stop', '', -1]
 		]);
 
+		$this->RegisterProfileBooleanEx('CCC.Mute', 'Speaker', '', '', [
+			[false, 'Off', '', -1],
+			[true, 'On', '', -1]
+		]);
+
 		$this->RegisterVariableInteger('Playback', 'Action', 'CCC.Playback', 0);
 		$this->EnableAction('Playback');
 
 		$this->RegisterVariableInteger('Volume', 'Volume', 'Intensity.100', 1);
 		$this->EnableAction('Volume');
 
-		$this->RegisterVariableString('Status', 'Status', '', 2);
-		$this->RegisterVariableString('Source', 'Source', '', 3);
-		$this->RegisterVariableString('NowPlaying', 'Now Playing', '', 4);
+		$this->RegisterVariableBoolean('Mute', 'Mute', 'CCC.Mute', 2);
+		$this->EnableAction('Mute');
+
+		$this->RegisterVariableString('Status', 'Status', '', 3);
+		$this->RegisterVariableString('Source', 'Source', '', 4);
+		$this->RegisterVariableString('NowPlaying', 'Now Playing', '', 5);
 
 		$this->ForceParent('{1AA6E1C3-E241-F658-AEC5-F8389B414A0C}');
 	}
@@ -38,6 +46,7 @@ class ChromecastController extends IPSModule {
 		$module = json_decode(file_get_contents(__DIR__ . '/module.json'));
 		if(count(IPS_GetInstanceListByModuleID($module->id))==0) {
 			$this->DeleteProfile('CCC.Playback');	
+			$this->DeleteProfile('CCC.Mute');
 		}
 		
 		//Never delete this line!
@@ -59,8 +68,6 @@ class ChromecastController extends IPSModule {
 			
 			$this->SetValue($Ident, $Value);
 
-			$function = '';
-			$parameters = '';
 			switch (strtolower($Ident)) {
 				case 'playback':
 					$this->SendDebug( __FUNCTION__ , 'Changing Playback...', 0);
@@ -88,6 +95,14 @@ class ChromecastController extends IPSModule {
 						throw new Exception('Invalid value for Volume. It should be a number between 0-100');	
 					}
 					break;
+				case 'mute':
+					$this->SendDebug( __FUNCTION__ , 'Changing Mute...', 0);
+					if(is_bool($Value)) {
+						$request[] = ['Function'=>'Mute', 'Parameters'=>[$Value]];
+					} else {
+						throw new Exception('Invalid value for Mute. It should be boolean');	
+					}
+
 				default:
 					throw new Exception('Invalid Ident. It should be "Playback" or "Volume"');	
 			}
