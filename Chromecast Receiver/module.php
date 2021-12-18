@@ -301,6 +301,12 @@ class ChromecastReceiver extends IPSModule {
 							$this->SendDebug(__FUNCTION__, sprintf('Volume is %s', (string)$level), 0);
 						}
 
+						if(isset($data->status->applications[0]->displayName)) {
+							$displayName = $data->status->applications[0]->displayName;
+							$status['DisplayName'] = $displayName;
+							$this->SendDebug(__FUNCTION__, sprintf('Display Name is %s', $displayName), 0);
+						}
+
 						if(isset($data->status->applications[0]->transportId)) {
 							$oldTransportId = $this->FetchBuffer('TransportId');
 							$newTransportId = $data->status->applications[0]->transportId;
