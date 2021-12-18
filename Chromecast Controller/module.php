@@ -40,6 +40,8 @@ class ChromecastController extends IPSModule {
 		$this->RegisterVariableString('NowPlaying', 'Now Playing', '', 5);
 
 		$this->ForceParent('{1AA6E1C3-E241-F658-AEC5-F8389B414A0C}');
+		
+		$this->RegisterTimer('PingPong', 0, 'IPS_RequestAction(' . (string)$this->InstanceID . ', "ResetPlaybackState", 0);'); 
 	}
 
 	public function Destroy() {
@@ -69,6 +71,9 @@ class ChromecastController extends IPSModule {
 			$this->SetValue($Ident, $Value);
 
 			switch (strtolower($Ident)) {
+				case 'resetplaybackstate':
+					$this->SetValue('Playback', 0);
+					break;
 				case 'playback':
 					$this->SendDebug( __FUNCTION__ , 'Changing Playback...', 0);
 					switch($Value) {
@@ -86,6 +91,9 @@ class ChromecastController extends IPSModule {
 						default:
 							throw new Exception('Invalid value for Playback. Accepted values are 0,1,2,3');
 					}
+				
+					$this->SetTimerInterval('ResetPlaybackState', 5000);
+
 					break;
 				case 'volume':
 					$this->SendDebug( __FUNCTION__ , 'Changing Volume...', 0);
@@ -139,7 +147,7 @@ class ChromecastController extends IPSModule {
 			if(is_string($playerState)) {
 				$this->SetValue('Status', $playerState);
 				
-				switch(strtolower($playerState)) {
+				/*switch(strtolower($playerState)) {
 					case 'playing':
 					case 'buffering':
 						$state = 1;
@@ -150,7 +158,7 @@ class ChromecastController extends IPSModule {
 					default:
 						$state = 0;
 				}
-				$this->SetValue('Playback', $state);
+				$this->SetValue('Playback', $state); */
 			}
 		}
 
