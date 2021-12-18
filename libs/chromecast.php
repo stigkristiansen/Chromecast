@@ -78,7 +78,7 @@ trait Chromecast {
 		$this->SendDebug(__FUNCTION__, sprintf('GET_STATUS was sent to the receiver with RequestId %d', $requestId), 0);
 	}
 
-	private function GetMediaStatus() {
+	public function GetMediaStatus() {
 		$value = $this->FetchBuffer('TransportId');
 		$transportId=$value!==false?$value:'';
 
