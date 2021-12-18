@@ -171,6 +171,8 @@ class ChromecastController extends IPSModule {
 				$this->SetValue('NowPlaying', '');
 				$this->SetValue('Status', '');
 				$this->SetValue('Playback', 0);
+				$this->SetValue('Duration', 0);
+				$this->SetValue('CurrentTime', 0);
 			}
 		}
 
