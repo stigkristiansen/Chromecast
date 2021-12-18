@@ -39,6 +39,9 @@ class ChromecastController extends IPSModule {
 		$this->RegisterVariableString('Source', 'Source', '', 4);
 		$this->RegisterVariableString('NowPlaying', 'Now Playing', '', 5);
 
+		$this->RegisterVariableString('Duration', 'Duration', '', 6);
+		$this->RegisterVariableString('CurrentTime', 'Current', '', 7);
+
 		$this->ForceParent('{1AA6E1C3-E241-F658-AEC5-F8389B414A0C}');
 		
 		$this->RegisterTimer('ResetPlaybackState', 0, 'IPS_RequestAction(' . (string)$this->InstanceID . ', "ResetPlaybackState", 0);'); 
@@ -149,19 +152,6 @@ class ChromecastController extends IPSModule {
 			$playerState = $data->Buffer->PlayerState;
 			if(is_string($playerState)) {
 				$this->SetValue('Status', $playerState);
-				
-				/*switch(strtolower($playerState)) {
-					case 'playing':
-					case 'buffering':
-						$state = 1;
-						break;
-					case 'paused':
-						$state = 2;
-						break;
-					default:
-						$state = 0;
-				}
-				$this->SetValue('Playback', $state); */
 			}
 		}
 
@@ -184,5 +174,25 @@ class ChromecastController extends IPSModule {
 			}
 		}
 
+		if(isset($data->Buffer->Duration)) {
+			$duration = $data->Buffer->Duration;
+			if(is_numeric($duration)) {
+				$this->SetValue('Duration', $this->secondsToString($duration));
+			}
+		}
+
+		if(isset($data->Buffer->CurrentTime)) {
+			$current = $data->Buffer->CurrentTime;
+			if(is_numeric($current)) {
+				$this->SetValue('CurrentTime', $this->secondsToString($current));
+			}
+		}
+	}
+
+	private function secondsToString(float $Seconds) {
+		$m = floor(($Seconds%3600)/60);
+		$h = floor(($Seconds%86400)/3600);
+		
+		return sprintf('%d h %d min', $h, $m);
 	}
 }

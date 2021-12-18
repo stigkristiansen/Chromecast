@@ -334,6 +334,19 @@ class ChromecastReceiver extends IPSModule {
 							$this->UpdateBuffer('MediaSessionId', $mediaSessionId);
 							$this->SendDebug(__FUNCTION__, sprintf('MediaSessionId is %d', $mediaSessionId), 0);
 						}
+
+						if(isset($data->status[0]->currentTime)) {
+							$currentTime =$data->status[0]->currentTime;
+							$status['CurrentTime'] = $currentTime;
+							$this->SendDebug(__FUNCTION__, sprintf('CurrentTime is %d', $mediaSessionId), 0);
+						}
+
+						if(isset($data->status[0]->media->duration)) {
+							$duration =$data->status[0]->media->duration;
+							$status['Duration'] = $duration;
+							$this->SendDebug(__FUNCTION__, sprintf('Duration is is %d', $mediaSessionId), 0);
+						}
+
 						if(isset($data->status[0]->playerState)) {
 							$playerState = $data->status[0]->playerState;
 							$status['PlayerState'] = $playerState;
@@ -349,7 +362,7 @@ class ChromecastReceiver extends IPSModule {
 						if(isset($data->status[0]->media->metadata->subtitle)) {
 							$subTitle = $data->status[0]->media->metadata->subtitle;
 							$status['SubTitle'] = $subTitle;
-							$this->SendDebug(__FUNCTION__, sprintf('Sub Title is "%s"', $subTitle), 0);
+							$this->SendDebug(__FUNCTION__, sprintf('SubTitle is "%s"', $subTitle), 0);
 						}
 						break;
 				}
