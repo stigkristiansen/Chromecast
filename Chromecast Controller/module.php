@@ -151,6 +151,14 @@ class ChromecastController extends IPSModule {
 	public function ReceiveData($JSONString) {
 		$data = json_decode($JSONString);
 		$this->SendDebug( __FUNCTION__ , 'Received status: '. json_encode($data->Buffer), 0);
+
+		if(isset($data->Buffer->Command)) {
+			$command = $data->Buffer->Command;
+			if(strtolower($command)=='reset') {
+				$this->SendDebug( __FUNCTION__ , 'Resetting all variables...', 0);
+				$this->Reset();
+			}
+		}
 		
 		if(isset($data->Buffer->Mute)) {
 			$state = $data->Buffer->Mute;
@@ -185,14 +193,7 @@ class ChromecastController extends IPSModule {
 			if(is_string($displayName) && strcasecmp($displayName, 'Backdrop')!=0) {
 				$this->SetValue('Source', $displayName);
 			} else {
-				$this->SetValue('Source', '');
-				$this->SetValue('NowPlaying', '');
-				$this->SetValue('Status', '');
-				$this->SetValue('Playback', 0);
-				$this->SetValue('Duration', '');
-				$this->SetValue('CurrentTime', '');
-				$this->SetValue('TimeLeft', '');
-				$this->SetValueEx('Position', 0);
+				$this->Reset();
 			}
 		}
 
@@ -223,6 +224,17 @@ class ChromecastController extends IPSModule {
 			$this->SetValueEx('TimeLeft', '');
 			$this->SetValueEx('Position', 0);
 		}
+	}
+
+	private function Reset() {
+		$this->SetValue('Source', '');
+		$this->SetValue('NowPlaying', '');
+		$this->SetValue('Status', '');
+		$this->SetValue('Playback', 0);
+		$this->SetValue('Duration', '');
+		$this->SetValue('CurrentTime', '');
+		$this->SetValue('TimeLeft', '');
+		$this->SetValueEx('Position', 0);
 	}
 
 	private function secondsToString(float $Seconds) {

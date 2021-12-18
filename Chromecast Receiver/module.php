@@ -106,6 +106,9 @@ class ChromecastReceiver extends IPSModule {
 		$this->SetTimerInterval('DelayedInit', 0);
 		$this->SetTimerInterval('PingPong', 5000);
 		$this->ConnectDevice();
+
+		$command['Command'] = 'Reset';
+		$this->SendDataToChildren(json_encode(['DataID' => '{3FBC907B-E487-DC82-2730-11F8CBD494A8}', 'Buffer' => $command]));
 	}
 
 	private function CheckIOConfig() {
