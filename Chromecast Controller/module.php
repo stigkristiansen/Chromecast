@@ -243,9 +243,9 @@ class ChromecastController extends IPSModule {
 		$h = floor(($Seconds%86400)/3600);
 		
 		if($ShowSeconds) {
-			return sprintf('%d:%d:%d', $h, $m, $s);
+			return sprintf('%02d:%02d:%02d', $h, $m, $s);
 		} else {
-			return sprintf('%d:%d', $h, $m);
+			return sprintf('%02d:%02d', $h, $m);
 		}
 		
 	}
