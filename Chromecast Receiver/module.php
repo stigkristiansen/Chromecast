@@ -47,7 +47,7 @@ class ChromecastReceiver extends IPSModule {
 		$this->SendDebug(__FUNCTION__, 'Starting up...', 0);
 		$this->LogMessage('Starting up...', KL_ERROR);
 
-		$this->RegisterMessage($this->InstanceID, IPS_KERNELMESSAGE);
+		$this->RegisterMessage(0, IPS_KERNELMESSAGE);
 
 		if (IPS_GetKernelRunlevel() == KR_READY) {
             $this->Init();
