@@ -134,13 +134,6 @@ class ChromecastController extends IPSModule {
 			}
 		}
 
-		if(isset($data->Buffer->Title)) {
-			$title = $data->Buffer->Title;
-			if(is_string($title)) {
-				$this->SetValue('NowPlaying', $title);
-			}
-		}
-
 		if(isset($data->Buffer->DisplayName)) {
 			$displayName = $data->Buffer->DisplayName;
 			if(is_string($displayName)) {
@@ -171,6 +164,13 @@ class ChromecastController extends IPSModule {
 						$state = 0;
 				}
 				$this->SetValue('Playback', $state);
+			}
+		}
+
+		if(isset($data->Buffer->Title)) {
+			$title = $data->Buffer->Title;
+			if(is_string($title)) {
+				$this->SetValue('NowPlaying', $title);
 			}
 		}
 
