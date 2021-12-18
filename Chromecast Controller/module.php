@@ -41,6 +41,7 @@ class ChromecastController extends IPSModule {
 
 		$this->RegisterVariableString('Duration', 'Duration', '', 6);
 		$this->RegisterVariableString('CurrentTime', 'Current', '', 7);
+		$this->RegisterVariableString('TimeLeft', 'Time left', '', 8);
 
 		$this->ForceParent('{1AA6E1C3-E241-F658-AEC5-F8389B414A0C}');
 		
@@ -176,6 +177,7 @@ class ChromecastController extends IPSModule {
 			}
 		}
 
+		$duration = 0;
 		if(isset($data->Buffer->Duration)) {
 			$duration = $data->Buffer->Duration;
 			if(is_numeric($duration)) {
@@ -183,11 +185,17 @@ class ChromecastController extends IPSModule {
 			}
 		}
 
+		$current = 0;
 		if(isset($data->Buffer->CurrentTime)) {
 			$current = $data->Buffer->CurrentTime;
 			if(is_numeric($current)) {
 				$this->SetValueEx('CurrentTime', $this->secondsToString($current));
 			}
+		}
+
+		if($current>0 && $duration>0) {
+			$left = $duration-$current;
+			$this->SetValueEx('TimeLeft', $this->secondsToString($left));
 		}
 	}
 
