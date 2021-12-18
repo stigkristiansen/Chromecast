@@ -73,6 +73,7 @@ class ChromecastController extends IPSModule {
 			switch (strtolower($Ident)) {
 				case 'resetplaybackstate':
 					$this->SetValue('Playback', 0);
+					$this->SetTimerInterval('ResetPlaybackState', 0);
 					break;
 				case 'playback':
 					$this->SendDebug( __FUNCTION__ , 'Changing Playback...', 0);
@@ -91,8 +92,10 @@ class ChromecastController extends IPSModule {
 						default:
 							throw new Exception('Invalid value for Playback. Accepted values are 0,1,2,3');
 					}
-				
-					$this->SetTimerInterval('ResetPlaybackState', 5000);
+					
+					if($Value!=0) {
+						$this->SetTimerInterval('ResetPlaybackState', 2000);
+					}
 
 					break;
 				case 'volume':
