@@ -31,6 +31,7 @@ class ChromecastReceiver extends IPSModule {
 		$this->RegisterTimer('PingPong', 0, 'IPS_RequestAction(' . (string)$this->InstanceID . ', "PingPong", 0);'); 
 		$this->RegisterTimer('CheckIOConfig', 0, 'IPS_RequestAction(' . (string)$this->InstanceID . ', "CheckIOConfig", 0);'); 
 		$this->RegisterTimer('DelayedInit', 0, 'IPS_RequestAction(' . (string)$this->InstanceID . ', "DelayedInit", 0);'); 
+		$this->RegisterTimer('GetMediaStatus', 0, 'IPS_RequestAction(' . (string)$this->InstanceID . ', "GetMediaStatus", 0);'); 
 	}
 
 	public function Destroy() {
@@ -92,6 +93,9 @@ class ChromecastReceiver extends IPSModule {
 				break;
 			case 'handleinstructions':
 				$this->HandleInstructions(json_decode(urldecode($Value)));
+				break;
+			case 'getmediastatus':
+				$this->GetMediaStatus();
 				break;
 		}
 	}
@@ -351,19 +355,25 @@ class ChromecastReceiver extends IPSModule {
 						if(isset($data->status[0]->currentTime)) {
 							$currentTime =$data->status[0]->currentTime;
 							$status['CurrentTime'] = $currentTime;
-							$this->SendDebug(__FUNCTION__, sprintf('CurrentTime is %d', $mediaSessionId), 0);
+							$this->SendDebug(__FUNCTION__, sprintf('CurrentTime is %d', $duration), 0);
 						}
 
 						if(isset($data->status[0]->media->duration)) {
 							$duration =$data->status[0]->media->duration;
 							$status['Duration'] = $duration;
-							$this->SendDebug(__FUNCTION__, sprintf('Duration is is %d', $mediaSessionId), 0);
+							$this->SendDebug(__FUNCTION__, sprintf('Duration is %d', $duration), 0);
 						}
 
 						if(isset($data->status[0]->playerState)) {
 							$playerState = $data->status[0]->playerState;
 							$status['PlayerState'] = $playerState;
+							if(strtolower($playerState)=='playing') {
+								$this->SetTimerInterval('GetMediaStatus', 60000);
+							} else {
+								$this->SetTimerInterval('GetMediaStatus', 0);
+							}
 							$this->SendDebug(__FUNCTION__, sprintf('PlayerState is "%s"', $playerState), 0);
+
 						}
 
 						if(isset($data->status[0]->media->metadata->title)) {
