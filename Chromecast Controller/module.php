@@ -151,12 +151,20 @@ class ChromecastController extends IPSModule {
 		if(isset($data->Buffer->PlayerState)) {
 			$playerState = $data->Buffer->PlayerState;
 			if(is_string($playerState)) {
+				$this->SetValue('Status', $playerState)
+				
 				switch(strtolower($playerState)) {
 					case 'playing':
 						$state = 1;
 						break;
 					case 'paused':
 						$state = 2;
+						break;
+					case 'idle':
+						$state = 0;
+						$this->SetValue('Status', '');
+						$this->SetValue('Source', '');
+						$this->SetValue('Title', '');
 						break;
 					default:
 						$state = 0;
