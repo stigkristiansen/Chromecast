@@ -102,9 +102,9 @@ class ChromecastController extends IPSModule {
 					} else {
 						throw new Exception('Invalid value for Mute. It should be boolean');	
 					}
-
+					break;
 				default:
-					throw new Exception('Invalid Ident. It should be "Playback" or "Volume"');	
+					throw new Exception('Invalid Ident. It should be "Playback", "Volume" or "Mute"');	
 			}
 
 			$this->SendDataToParent(json_encode(['DataID' => '{7F9B2C92-8242-882A-6C12-DA76767C9CA0}', 'Buffer' => $request]));
