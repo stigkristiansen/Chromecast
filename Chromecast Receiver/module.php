@@ -355,7 +355,7 @@ class ChromecastReceiver extends IPSModule {
 						if(isset($data->status[0]->currentTime)) {
 							$currentTime =$data->status[0]->currentTime;
 							$status['CurrentTime'] = $currentTime;
-							$this->SendDebug(__FUNCTION__, sprintf('CurrentTime is %d', $duration), 0);
+							$this->SendDebug(__FUNCTION__, sprintf('CurrentTime is %d', $currentTime), 0);
 						}
 
 						if(isset($data->status[0]->media->duration)) {
