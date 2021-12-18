@@ -138,28 +138,28 @@ class ChromecastController extends IPSModule {
 		if(isset($data->Buffer->Mute)) {
 			$state = $data->Buffer->Mute;
 			if(is_bool($state)) {
-				$this->SetValue('Mute', $state);
+				$this->SetValueEx('Mute', $state);
 			}
 		}
 
 		if(isset($data->Buffer->Volume)) {
 			$level = $data->Buffer->Volume;
 			if(is_numeric($level)) {
-				$this->SetValue('Volume', (int)ceil($level*100));
+				$this->SetValueEx('Volume', (int)ceil($level*100));
 			}
 		}
 
 		if(isset($data->Buffer->PlayerState)) {
 			$playerState = $data->Buffer->PlayerState;
 			if(is_string($playerState)) {
-				$this->SetValue('Status', $playerState);
+				$this->SetValueEx('Status', $playerState);
 			}
 		}
 
 		if(isset($data->Buffer->Title)) {
 			$title = $data->Buffer->Title;
 			if(is_string($title)) {
-				$this->SetValue('NowPlaying', $title);
+				$this->SetValueEx('NowPlaying', $title);
 			}
 		}
 
@@ -174,6 +174,7 @@ class ChromecastController extends IPSModule {
 				$this->SetValue('Playback', 0);
 				$this->SetValue('Duration', '');
 				$this->SetValue('CurrentTime', '');
+				$this->SetValue('TimeLeft', '');
 			}
 		}
 
