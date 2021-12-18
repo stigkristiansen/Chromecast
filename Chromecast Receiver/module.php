@@ -247,7 +247,7 @@ class ChromecastReceiver extends IPSModule {
 		} else if(preg_match("/urn:x-cast:com.google.cast.tp.connection/s", $buffer)) {
 			$handleData = true;
 		} else if(preg_match("/urn:x-cast:tv.viaplay.chromecast/s", $buffer)) {
-			$handleData = true;
+			//$handleData = true;
 		} 
 
 		if(!$handleData) {
@@ -280,14 +280,14 @@ class ChromecastReceiver extends IPSModule {
 						$this->SendDebug(__FUNCTION__, 'Analyzing "POSDUR"...', 0);
 						if(isset($data->position)) {
 							$position = $data->position;
-							//$status['CurrentTime'] = $position;
-							//$this->SendDebug(__FUNCTION__, sprintf('CurrentTime is %s', (string)$position), 0);
+							$status['CurrentTime'] = $position;
+							$this->SendDebug(__FUNCTION__, sprintf('CurrentTime is %s', (string)$position), 0);
 						}
 						
 						if(isset($data->duration)) {
 							$duration = $data->duration;
-							//$status['Duration'] = $duration;
-							//$this->SendDebug(__FUNCTION__, sprintf('Duration is %s', (string)$duration), 0);
+							$status['Duration'] = $duration;
+							$this->SendDebug(__FUNCTION__, sprintf('Duration is %s', (string)$duration), 0);
 						}
 						break;
 					case 'ping':
