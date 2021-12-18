@@ -44,6 +44,8 @@ class ChromecastReceiver extends IPSModule {
 		//Never delete this line!
 		parent::ApplyChanges();
 
+		$this->SendDebug(__FUNCTION__, 'Starting up...', 0);
+
 		$this->RegisterMessage($this->InstanceID, IPS_KERNELMESSAGE);
 
 		if (IPS_GetKernelRunlevel() == KR_READY) {
