@@ -239,7 +239,7 @@ class ChromecastReceiver extends IPSModule {
 		}
 
 		if(!$handleData) {
-			$this->SendDebug(__FUNCTION__, 'Incoming namespace is not handled', 0);	
+			$this->SendDebug(__FUNCTION__, 'Incoming data is not handled', 0);	
 			$this->UpdateBuffer('Message', '');
 			return;
 		}
