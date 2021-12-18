@@ -226,10 +226,11 @@ class ChromecastController extends IPSModule {
 	}
 
 	private function secondsToString(float $Seconds) {
+		$s = $Seconds%60;
 		$m = floor(($Seconds%3600)/60);
 		$h = floor(($Seconds%86400)/3600);
 		
-		return sprintf('%d h %d min', $h, $m);
+		return sprintf('%d:%d:%d ', $h, $m, $s);
 	}
 
 	private function SetValueEx(string $Ident, $Value) {
