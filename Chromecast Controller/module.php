@@ -122,7 +122,7 @@ class ChromecastController extends IPSModule {
 		
 		if(isset($data->Buffer->Mute)) {
 			$state = $data->Buffer->Mute;
-			if(is_boo($state)) {
+			if(is_bool($state)) {
 				$this->SetValue('Mute', $state);
 			}
 		}
@@ -136,7 +136,7 @@ class ChromecastController extends IPSModule {
 
 		if(isset($data->Buffer->Title)) {
 			$title = $data->Buffer->Title;
-			if(is_string($level)) {
+			if(is_string($title)) {
 				$this->SetValue('NowPlaying', $title);
 			}
 		}
