@@ -178,7 +178,9 @@ class ChromecastController extends IPSModule {
 			$playerState = $data->Buffer->PlayerState;
 			if(is_string($playerState)) {
 				if(strtolower($playerState)=='idle') {
-					$this->Reset(false);
+					$source = $this->GetValue('Source');
+					$this->Reset();
+					$this->SetValue('Source', $source);
 				} else {
 					$this->SetValueEx('Status', $playerState);
 				}
@@ -194,7 +196,7 @@ class ChromecastController extends IPSModule {
 
 		if(isset($data->Buffer->DisplayName)) {
 			$displayName = $data->Buffer->DisplayName;
-			if(is_string($displayName) && strcasecmp($displayName, 'Backdrop')!=0) {
+			if(is_string($displayName) && strtolower($displayName)=='backdrop') {
 				$oldSource = $this->GetValue('Source');
 				if($oldSource!=$displayName) {
 					$this->Reset();	
@@ -238,10 +240,7 @@ class ChromecastController extends IPSModule {
 	}
 
 	private function Reset($ClearSource=true) {
-		if($ClearSource) {
-			$this->SetValue('Source', '');
-		}
-		
+		$this->SetValue('Source', '');
 		$this->SetValue('NowPlaying', '');
 		$this->SetValue('Status', '');
 		$this->SetValue('Playback', 0);
