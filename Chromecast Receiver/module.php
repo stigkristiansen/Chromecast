@@ -404,8 +404,10 @@ class ChromecastReceiver extends IPSModule {
 				if(count($status)>0) {
 					$this->SendDataToChildren(json_encode(['DataID' => '{3FBC907B-E487-DC82-2730-11F8CBD494A8}', 'Buffer' => $status]));
 				}
-				
-			} 
+			} else {
+				$this->SendDebug(__FUNCTION__, 'Incoming data is not complete. Saving the data for later usage...', 0);
+				$this->UpdateBuffer('Message', $buffer);	
+			}
 			
 		} else {
 			$this->SendDebug(__FUNCTION__, 'Incoming data is not complete. Saving the data for later usage...', 0);
