@@ -258,7 +258,7 @@ class ChromecastReceiver extends IPSModule {
 
 		if(!$handleData) {
 			$this->SendDebug(__FUNCTION__, 'Incoming data is not handled', 0);	
-			$this->UpdateBuffer('Message', '');
+			$this->UpdateBufferRaw('Message', '');
 			return;
 		}
 
@@ -270,10 +270,10 @@ class ChromecastReceiver extends IPSModule {
 
 			if($data===null) {
 				$this->SendDebug(__FUNCTION__, 'Incoming data is not complete. Saving the data for later usage...', 0);	
-				$this->UpdateBuffer('Message', $buffer);
+				$this->UpdateBufferRaw('Message', $buffer);
 				return;
 			} else if(strlen($oldMessage) > 0) {
-				$this->UpdateBuffer('Message', '');
+				$this->UpdateBufferRaw('Message', '');
 			}
 
 			$this->SendDebug(__FUNCTION__, 'Analyzing data...', 0);
@@ -409,12 +409,12 @@ class ChromecastReceiver extends IPSModule {
 				}
 			} else {
 				$this->SendDebug(__FUNCTION__, 'Incoming data is not complete. Saving the data for later usage...', 0);
-				$this->UpdateBuffer('Message', $buffer);	
+				$this->UpdateBufferRaw('Message', $buffer);	
 			}
 			
 		} else {
 			$this->SendDebug(__FUNCTION__, 'Incoming data is not complete. Saving the data for later usage...', 0);
-			$this->UpdateBuffer('Message', $buffer);
+			$this->UpdateBufferRaw('Message', $buffer);
 		}
 
 		//$this->SendDataToChildren(json_encode(['DataID' => '{3FBC907B-E487-DC82-2730-11F8CBD494A8}', 'Buffer' => $data->Buffer]));

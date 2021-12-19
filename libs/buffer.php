@@ -61,4 +61,16 @@ trait Buffer {
 			return false;
 		}
 	}
+
+	private function UpdateBufferRaw(string $Name, $Value) {
+		if($this->Lock($Name)) {
+			$this->SetBuffer($Name, $Value);
+			//$this->SendDebug(__FUNCTION__, sprintf('Updated "%s"',$Name), 0);
+			$this->Unlock($Name);
+		} else {
+			$msg = sprintf('Failed to Update "%s"',$Name);
+			$this->LogMessage($msg, KL_ERROR);
+			$this->SendDebug(__FUNCTION__, $msg, 0);
+		}
+	}
 }
