@@ -23,7 +23,7 @@ trait Buffer {
     }
 
     private function UpdateBuffer(string $Name, $Value) {
-		$this->SetBufferRaw($Name, json_encode($Value));
+		$this->UpdateBufferRaw($Name, json_encode($Value));
 	}
 
 	private function FetchBuffer(string $Name) {
