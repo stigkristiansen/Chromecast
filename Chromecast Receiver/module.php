@@ -234,8 +234,11 @@ class ChromecastReceiver extends IPSModule {
 		$this->SendDebug(__FUNCTION__, 'Received from parent: ' . utf8_decode($data->Buffer), 0);
 
 		$oldMessage = $this->FetchBuffer('Message');
-		if($oldMessage!=null && strlen($oldMessage) > 0) {
+		$this->SendDebug(__FUNCTION__, 'Old data is: ' . $oldMessage, 0);
+		if($oldMessage!=NULL && strlen($oldMessage) > 0) {
+			$this->SendDebug(__FUNCTION__, 'Merging incoming data...', 0);
 			$buffer = $oldMessage . utf8_decode($data->Buffer);
+			$this->SendDebug(__FUNCTION__, 'Merged data is: ' $buffer, 0);
 		} else {
 			$buffer = utf8_decode($data->Buffer);
 		}
