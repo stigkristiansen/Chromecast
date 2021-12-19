@@ -47,4 +47,18 @@ trait Buffer {
 			return false;
 		}
 	}
+
+	private function FetchBufferRaw(string $Name) {
+		if($this->Lock($Name)) {
+			$value = $this->GetBuffer($Name);
+			//$this->SendDebug(__FUNCTION__, sprintf('Fetched "%s"',$Name), 0);
+			$this->Unlock($Name);
+			return $value;
+		} else {
+			$msg = sprintf('Failed to Fetch "%s"',$Name);
+			$this->LogMessage($msg, KL_ERROR);
+			$this->SendDebug(__FUNCTION__, $msg, 0);
+			return false;
+		}
+	}
 }
