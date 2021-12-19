@@ -243,6 +243,8 @@ class ChromecastReceiver extends IPSModule {
 			} else {
 				$buffer = utf8_decode($data->Buffer);
 			}
+		} else {
+			$buffer = utf8_decode($data->Buffer);
 		}
 
 		$handleData = false;
