@@ -247,7 +247,7 @@ class ChromecastController extends IPSModule {
 	}
 
 	private function secondsToString(float $Seconds, bool $ShowSeconds=false) {
-		if($Seconds>0) {
+		if($Seconds>=0) {
 			$s = $Seconds%60;
 			$m = floor(($Seconds%3600)/60);
 			$h = floor(($Seconds%86400)/3600);
