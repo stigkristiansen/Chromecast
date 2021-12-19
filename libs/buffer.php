@@ -23,29 +23,12 @@ trait Buffer {
     }
 
     private function UpdateBuffer(string $Name, $Value) {
-		if($this->Lock($Name)) {
-			$this->SetBuffer($Name, json_encode($Value));
-			//$this->SendDebug(__FUNCTION__, sprintf('Updated "%s"',$Name), 0);
-			$this->Unlock($Name);
-		} else {
-			$msg = sprintf('Failed to Update "%s"',$Name);
-			$this->LogMessage($msg, KL_ERROR);
-			$this->SendDebug(__FUNCTION__, $msg, 0);
-		}
+		$this->SetBufferRaw($Name, json_encode($Value));
 	}
 
 	private function FetchBuffer(string $Name) {
-		if($this->Lock($Name)) {
-			$value = $this->GetBuffer($Name);
-			//$this->SendDebug(__FUNCTION__, sprintf('Fetched "%s"',$Name), 0);
-			$this->Unlock($Name);
-			return json_decode($value);
-		} else {
-			$msg = sprintf('Failed to Fetch "%s"',$Name);
-			$this->LogMessage($msg, KL_ERROR);
-			$this->SendDebug(__FUNCTION__, $msg, 0);
-			return false;
-		}
+		$value = $this->FetchBufferRaw($Name);
+		return json_decode($value);
 	}
 
 	private function FetchBufferRaw(string $Name) {

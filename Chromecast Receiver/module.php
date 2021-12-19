@@ -185,8 +185,6 @@ class ChromecastReceiver extends IPSModule {
 		} 
 	}
 
-	
-
 	public function ForwardData($JSONString) {
 		$data = json_decode($JSONString);
 		if(isset($data->Buffer) && is_array($data->Buffer)) {
@@ -194,7 +192,6 @@ class ChromecastReceiver extends IPSModule {
 			$script = 'IPS_RequestAction(' . (string)$this->InstanceID . ', "HandleInstructions","'.urlencode(json_encode($data->Buffer)).'");';
 			$this->SendDebug(__FUNCTION__, 'Calling HandleInstructions in another thread...', 0);
 			$this->RegisterOnceTimer('HandleInstructions', $script);
-			
 		} else {
 			$msg = sprintf('Received invalid data: %s', json_encode($data));
 			$this->SendDebug(__FUNCTION__, $msg, 0);
