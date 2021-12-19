@@ -177,7 +177,11 @@ class ChromecastController extends IPSModule {
 		if(isset($data->Buffer->PlayerState)) {
 			$playerState = $data->Buffer->PlayerState;
 			if(is_string($playerState)) {
-				$this->SetValueEx('Status', $playerState);
+				if(strtolower($playerState)=='idle') {
+					$this->Reset(false);
+				} else {
+					$this->SetValueEx('Status', $playerState);
+				}
 			}
 		}
 
@@ -233,16 +237,19 @@ class ChromecastController extends IPSModule {
 		}
 	}
 
-	private function Reset() {
-		$this->SetValue('Source', '');
+	private function Reset($ClearSource=true) {
+		if($ClearSource) {
+			$this->SetValue('Source', '');
+		}
+		
 		$this->SetValue('NowPlaying', '');
 		$this->SetValue('Status', '');
 		$this->SetValue('Playback', 0);
 		$this->SetValue('CurrentTime', '');
 		$this->SetValue('TimeLeft', '');
 		$this->SetValueEx('Position', 0);
-		
 		$this->SetValue('Duration', '');
+	
 		$this->UpdateBuffer('Duration', 0);
 	}
 
