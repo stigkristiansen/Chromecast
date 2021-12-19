@@ -72,8 +72,9 @@ class ChromecastReceiver extends IPSModule {
 		$this->UpdateBuffer('TransportId', '');
 		$this->UpdateBuffer('SessionId', '');
 		$this->UpdateBuffer('MediaSessionId', 0);
-		$this->UpdateBuffer('Message', '');
 		$this->UpdateBuffer('LastActiveTime', time());
+
+		$this->UpdateBufferRaw('Message', '');
 
 		$command['Command'] = 'Reset';
 		$this->SendDataToChildren(json_encode(['DataID' => '{3FBC907B-E487-DC82-2730-11F8CBD494A8}', 'Buffer' => $command]));
@@ -234,7 +235,7 @@ class ChromecastReceiver extends IPSModule {
 		$this->SendDebug(__FUNCTION__, 'Received from parent: ' . utf8_decode($data->Buffer), 0);
 
 		$oldMessage = $this->FetchBufferRaw('Message');
-		$this->SendDebug(__FUNCTION__, 'Old data is: ' . json_encode($oldMessage), 0);
+		$this->SendDebug(__FUNCTION__, 'Old data is: ' . $oldMessage, 0);
 		if(strlen($oldMessage) > 0) {
 			$this->SendDebug(__FUNCTION__, 'Merging incoming data...', 0);
 			$buffer = $oldMessage . utf8_decode($data->Buffer);
@@ -272,9 +273,9 @@ class ChromecastReceiver extends IPSModule {
 				$this->SendDebug(__FUNCTION__, 'Incoming data is not complete. Saving the data for later usage...', 0);	
 				$this->UpdateBufferRaw('Message', $buffer);
 				return;
-			} else if(strlen($oldMessage) > 0) {
-				$this->UpdateBufferRaw('Message', '');
-			}
+			} //else if(strlen($oldMessage) > 0) {
+				//$this->UpdateBufferRaw('Message', '');
+			//}
 
 			$this->SendDebug(__FUNCTION__, 'Analyzing data...', 0);
 			$this->SendDebug(__FUNCTION__, sprintf('The data is "%s"', $result[0]), 0);
