@@ -234,7 +234,7 @@ class ChromecastReceiver extends IPSModule {
 		$data = json_decode($JSONString);
 		$this->SendDebug(__FUNCTION__, 'Received from parent: ' . utf8_decode($data->Buffer), 0);
 
-		if(!preg_match('/{"type":"PONG"}/s', $data)) { // A PONG might come in betwwen other large messages. Don't merge!
+		if(!preg_match('/{"type":"PONG"}/s', utf8_decode($data->Buffer))) { // A PONG might come in betwwen other large messages. Don't merge!
 			$oldMessage = $this->FetchBufferRaw('Message');
 			if(strlen($oldMessage) > 0) {
 				$this->SendDebug(__FUNCTION__, 'Merging incoming data...', 0);
