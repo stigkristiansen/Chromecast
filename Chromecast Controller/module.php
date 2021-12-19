@@ -239,15 +239,15 @@ class ChromecastController extends IPSModule {
 		}
 	}
 
-	private function Reset($ClearSource=true) {
-		$this->SetValue('Source', '');
-		$this->SetValue('NowPlaying', '');
-		$this->SetValue('Status', '');
-		$this->SetValue('Playback', 0);
-		$this->SetValue('CurrentTime', '');
-		$this->SetValue('TimeLeft', '');
+	private function Reset() {
+		$this->SetValueEx('Source', '');
+		$this->SetValueEx('NowPlaying', '');
+		$this->SetValueEx('Status', '');
+		$this->SetValueEx('Playback', 0);
+		$this->SetValueEx('CurrentTime', '');
+		$this->SetValueEx('TimeLeft', '');
 		$this->SetValueEx('Position', 0);
-		$this->SetValue('Duration', '');
+		$this->SetValueEx('Duration', '');
 	
 		$this->UpdateBuffer('Duration', 0);
 	}
