@@ -196,7 +196,7 @@ class ChromecastController extends IPSModule {
 
 		if(isset($data->Buffer->DisplayName)) {
 			$displayName = $data->Buffer->DisplayName;
-			if(is_string($displayName) && strtolower($displayName)=='backdrop') {
+			if(is_string($displayName) && strtolower($displayName)=!'backdrop') {
 				$oldSource = $this->GetValue('Source');
 				if($oldSource!=$displayName) {
 					$this->Reset();	
