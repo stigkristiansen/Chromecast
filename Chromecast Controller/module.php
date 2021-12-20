@@ -22,11 +22,14 @@ class ChromecastController extends IPSModule {
 			[2, 'Pause', '', -1],
 			[3, 'Stop', '', -1]
 		]);
-
 		$this->RegisterProfileBooleanEx('CCC.Mute', 'Speaker', '', '', [
 			[false, 'Off', '', -1],
 			[true, 'On', '', -1]
 		]);
+		$this->RegisterProfileString('CCC.Information', 'Information', '', '');
+		$this->RegisterProfileString('CCC.Time', 'Hourglass', '', '');
+		$this->RegisterProfileString('CCC.Play', 'Script', '', '');
+		$this->RegisterProfileInteger('CCC.Position', 'Distance', '', '', 0, 100, 1);
 
 		$this->RegisterVariableInteger('Playback', 'Action', 'CCC.Playback', 0);
 		$this->EnableAction('Playback');
@@ -37,15 +40,14 @@ class ChromecastController extends IPSModule {
 		$this->RegisterVariableBoolean('Mute', 'Mute', 'CCC.Mute', 2);
 		$this->EnableAction('Mute');
 
-		$this->RegisterVariableString('Status', 'Status', '', 3);
-		$this->RegisterVariableString('Source', 'Source', '', 4);
-		$this->RegisterVariableString('NowPlaying', 'Now Playing', '', 5);
-
-		$this->RegisterVariableString('Duration', 'Duration', '', 6);
-		$this->RegisterVariableString('CurrentTime', 'Current', '', 7);
-		$this->RegisterVariableString('TimeLeft', 'Time left', '', 8);
-
-		$this->RegisterVariableInteger('Position', 'Position', 'Intensity.100', 9);
+		$this->RegisterVariableString('Status', 'Status', 'CCC.Information', 3);
+		$this->RegisterVariableString('Source', 'Source', 'CCC.Information', 4);
+		$this->RegisterVariableString('NowPlaying', 'Now Playing', 'CCC.Play', 5);
+		$this->RegisterVariableString('Duration', 'Duration', 'CCC.Time', 6);
+		$this->RegisterVariableString('CurrentTime', 'Current', 'CCC.Time', 7);
+		$this->RegisterVariableString('TimeLeft', 'Time left', 'CCC.Time', 8);
+		
+		$this->RegisterVariableInteger('Position', 'Position', 'CCC.Position', 9);
 		$this->EnableAction('Position');
 
 		$this->ForceParent('{1AA6E1C3-E241-F658-AEC5-F8389B414A0C}');
@@ -58,6 +60,10 @@ class ChromecastController extends IPSModule {
 		if(count(IPS_GetInstanceListByModuleID($module->id))==0) {
 			$this->DeleteProfile('CCC.Playback');	
 			$this->DeleteProfile('CCC.Mute');
+			$this->DeleteProfile('CCC.Information');
+			$this->DeleteProfile('CCC.Time');
+			$this->DeleteProfile('CCC.Play');
+			$this->DeleteProfile('CCC.Position');
 		}
 		
 		//Never delete this line!

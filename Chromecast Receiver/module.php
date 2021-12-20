@@ -421,26 +421,4 @@ class ChromecastReceiver extends IPSModule {
 
 		//$this->SendDataToChildren(json_encode(['DataID' => '{3FBC907B-E487-DC82-2730-11F8CBD494A8}', 'Buffer' => $data->Buffer]));
 	}
-
-	private function GetRegEx() {
-		$regExString = '"([^"\\\\]*|\\\\["\\\\bfnrt\/]|\\\\u[0-9a-f]{4})*"';
-		$regExNumber = '-?(?=[1-9]|0(?!\d))\d+(\.\d+)?([eE][+-]?\d+)?';
-		$regExBoolean = 'true|false|null'; // these are actually copied from Mario's answer
-		$regEx = '/\A('.$regExString.
-		'|'.$regExNumber.
-		'|'.$regExBoolean.
-		'|'; //string, number, boolean
-		$regEx .= '\[(?:(?1)(?:,(?1))*)?\s*\]|'; //arrays
-		$regEx .= '\{(?:\s*'.$regExString.
-		'\s*:(?1)(?:,\s*'.$regExString.
-		'\s*:(?1))*)?\s*\}'; //objects
-		$regEx .= ')\Z/is';
-
-		return $regEx;
-	}
-
-
-
-
-
 }
