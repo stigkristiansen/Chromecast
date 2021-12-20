@@ -29,7 +29,7 @@ class ChromecastController extends IPSModule {
 		$this->RegisterProfileString('CCC.Information', 'Information', '', '');
 		$this->RegisterProfileString('CCC.Time', 'Hourglass', '', '');
 		$this->RegisterProfileString('CCC.Play', 'Script', '', '');
-		$this->RegisterProfileInteger('CCC.Position', 'Distance', '', '', 0, 100, 1);
+		$this->RegisterProfileInteger('CCC.Position', 'Distance', '', ' %', 0, 100, 1);
 
 		$this->RegisterVariableInteger('Playback', 'Action', 'CCC.Playback', 0);
 		$this->EnableAction('Playback');
