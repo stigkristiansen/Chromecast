@@ -96,24 +96,30 @@ class ChromecastReceiver extends IPSModule {
 	}
 	
 	public function RequestAction($Ident, $Value) {
-		switch (strtolower($Ident)) {
-			case 'pingpong':
-				$this->SendPingPong('PING');
-				break;
-			case 'checkioconfig':
-				$this->CheckIOConfig();
-				break;
-			case 'delayedinit':
-				$this->DelayedInit();
-				break;
-			case 'handleinstructions':
-				$this->HandleInstructions(json_decode(urldecode($Value)));
-				break;
-			case 'getmediastatus':
-				$this->SetTimerInterval('GetMediaStatus', 60000);
-				$this->GetMediaStatus();
-				break;
-		}
+		try {
+			switch (strtolower($Ident)) {
+				case 'pingpong':
+					$this->SendPingPong('PING');
+					break;
+				case 'checkioconfig':
+					$this->CheckIOConfig();
+					break;
+				case 'delayedinit':
+					$this->DelayedInit();
+					break;
+				case 'handleinstructions':
+					$this->HandleInstructions(json_decode(urldecode($Value)));
+					break;
+				case 'getmediastatus':
+					$this->SetTimerInterval('GetMediaStatus', 60000);
+					$this->GetMediaStatus();
+					break;
+			}
+		} catch(Exception $e) {
+			$msg = sprintf('An unexpected error occurred: %s',  $e->getMessage());
+			$this->SendDebug(__FUNCTION__, $msg, 0);
+			$this->LogMessage($msg, KL_ERROR);
+		} 
 	}
 
 	private function CheckIOConfig() {
