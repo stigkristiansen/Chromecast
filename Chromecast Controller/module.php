@@ -83,8 +83,6 @@ class ChromecastController extends IPSModule {
 		try {
 			$this->SendDebug( __FUNCTION__ , sprintf('ReqestAction called for Ident "%s" with Value %s', $Ident, (string)$Value), 0);
 			
-			$this->SetValue($Ident, $Value);
-
 			switch (strtolower($Ident)) {
 				case 'resetplaybackstate':
 					$this->SetValue('Playback', 0);
@@ -92,6 +90,7 @@ class ChromecastController extends IPSModule {
 					break;
 				case 'playback':
 					$this->SendDebug( __FUNCTION__ , 'Changing Playback...', 0);
+					$this->SetValue($Ident, $Value);
 					switch($Value) {
 						case 0: 
 							return;
@@ -115,6 +114,7 @@ class ChromecastController extends IPSModule {
 					break;
 				case 'volume':
 					$this->SendDebug( __FUNCTION__ , 'Changing Volume...', 0);
+					$this->SetValue($Ident, $Value);
 					if(is_numeric($Value)) {
 						$request[] = ['Function'=>'Volume', 'Parameters'=>[$Value]];
 					} else {
@@ -123,6 +123,7 @@ class ChromecastController extends IPSModule {
 					break;
 				case 'mute':
 					$this->SendDebug( __FUNCTION__ , 'Changing Mute...', 0);
+					$this->SetValue($Ident, $Value);
 					if(is_bool($Value)) {
 						$request[] = ['Function'=>'Mute', 'Parameters'=>[$Value]];
 					} else {
@@ -131,6 +132,7 @@ class ChromecastController extends IPSModule {
 					break;
 				case 'position':
 					$this->SendDebug( __FUNCTION__ , 'Changing Position...', 0);
+					$this->SetValue($Ident, $Value);
 					if(is_numeric($Value)) {
 						$duration = $this->FetchBuffer('Duration');
 						$newPosition = $duration/100*$Value;
