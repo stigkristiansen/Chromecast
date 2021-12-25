@@ -83,6 +83,7 @@ class ChromecastController extends IPSModule {
 		try {
 			$this->SendDebug( __FUNCTION__ , sprintf('ReqestAction called for Ident "%s" with Value %s', $Ident, (string)$Value), 0);
 			
+			$request = [];
 			switch (strtolower($Ident)) {
 				case 'resetplaybackstate':
 					$this->SetValue('Playback', 0);
@@ -147,7 +148,9 @@ class ChromecastController extends IPSModule {
 					throw new Exception('Invalid Ident. It should be "Playback", "Volume" or "Mute"');	
 			}
 
-			$this->SendDataToParent(json_encode(['DataID' => '{7F9B2C92-8242-882A-6C12-DA76767C9CA0}', 'Buffer' => $request]));
+			if(count($request)>0) {
+				$this->SendDataToParent(json_encode(['DataID' => '{7F9B2C92-8242-882A-6C12-DA76767C9CA0}', 'Buffer' => $request]));
+			}
 
 		} catch(Exception $e) {
 			$msg = sprintf('RequestAction failed. The error was "%s"',  $e->getMessage());
