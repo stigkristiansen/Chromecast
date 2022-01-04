@@ -206,7 +206,7 @@ class ChromecastController extends IPSModule {
 					if(strtolower($playerstate)=='playing' ) {
 						$this->SetTimerInterval('ResetVariables', 60000);
 					} else {
-						$this->SetTimerInterval('ResetVariables', 0;
+						$this->SetTimerInterval('ResetVariables', 0);
 					}
 				}
 			}
