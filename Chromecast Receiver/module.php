@@ -195,7 +195,9 @@ class ChromecastReceiver extends IPSModule {
 		$data = json_decode($JSONString);
 		if(isset($data->Buffer) && is_array($data->Buffer)) {
 			$this->SendDebug(__FUNCTION__, sprintf('Received instruction(s) from child instance: %s', json_encode($data->Buffer)), 0);
+			
 			$script = 'IPS_RequestAction(' . (string)$this->InstanceID . ', "HandleInstructions","'.urlencode(json_encode($data->Buffer)).'");';
+			
 			$this->SendDebug(__FUNCTION__, 'Calling HandleInstructions in another thread...', 0);
 			$this->RegisterOnceTimer('HandleInstructions', $script);
 		} else {

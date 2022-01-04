@@ -53,6 +53,7 @@ class ChromecastController extends IPSModule {
 		$this->ForceParent('{1AA6E1C3-E241-F658-AEC5-F8389B414A0C}');
 		
 		$this->RegisterTimer('ResetPlaybackState', 0, 'IPS_RequestAction(' . (string)$this->InstanceID . ', "ResetPlaybackState", 0);'); 
+		$this->RegisterTimer('ResetVariables', 0, 'IPS_RequestAction(' . (string)$this->InstanceID . ', "ResetVariables", 0);'); 
 	}
 
 	public function Destroy() {
@@ -85,6 +86,10 @@ class ChromecastController extends IPSModule {
 			
 			$request = [];
 			switch (strtolower($Ident)) {
+				case 'resetvariables':
+					$this->Reset();
+					$this->SetTimerInterval('ResetVariables', 0);
+					break;
 				case 'resetplaybackstate':
 					$this->SetValue('Playback', 0);
 					$this->SetTimerInterval('ResetPlaybackState', 0);
@@ -163,6 +168,10 @@ class ChromecastController extends IPSModule {
 		$data = json_decode($JSONString);
 		$this->SendDebug( __FUNCTION__ , 'Received status: '. json_encode($data->Buffer), 0);
 
+		if($this->GetTimerInterval('ResetVariables')!=0) {
+			$this->SetTimerInterval('ResetVariables', 60000);
+		}
+
 		if(isset($data->Buffer->Command)) {
 			$command = $data->Buffer->Command;
 			if(strtolower($command)=='reset') {
@@ -194,6 +203,11 @@ class ChromecastController extends IPSModule {
 					$this->SetValue('Source', $source);
 				} else {
 					$this->SetValueEx('Status', $playerState);
+					if(strtolower($playerstate)=='playing' ) {
+						$this->SetTimerInterval('ResetVariables', 60000);
+					} else {
+						$this->SetTimerInterval('ResetVariables', 0;
+					}
 				}
 			}
 		}
