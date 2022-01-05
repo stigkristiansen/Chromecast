@@ -109,11 +109,30 @@
 				} 
 				
 				$value['create'] = [
-					'moduleID'      => '{C8CE073C-D0D9-A7F9-C37E-A0C4978886E3}',
-					'name'			=> $device['DisplayName'],
-					'configuration' => [
-						'Name' => $device['Name'],
-						'Id'   => $id
+					[
+						'moduleID'      => '{C8CE073C-D0D9-A7F9-C37E-A0C4978886E3}',
+						'name'			=> $device['DisplayName'],
+						'configuration' => [
+							'Name' => $device['Name'],
+							'Id'   => $id
+						]
+					],
+					[
+						'moduleID'      => '{1AA6E1C3-E241-F658-AEC5-F8389B414A0C}',
+						'configuration' => [
+							'Name' => $device['Name']
+						]
+					],
+					[
+						'moduleID'      => '{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}',  
+						'configuration'	=> [
+							'Open' 		=> true,
+							'Host'		=> $device['Host'],
+							'Port'		=> $device['Port'],
+							'UseSSL'	=> true,
+							'VerifyHost' => false,
+							'VerifyPeer' => false
+						]
 					]
 				];
 			
@@ -153,8 +172,6 @@
 			$services = @ZC_QueryServiceTypeEx($this->dnsSdId, "_googlecast._tcp", "", $this->ReadPropertyInteger('DiscoveryTimeout'));
 
 			if($services!==false) {
-				$this->SendDebug(__FUNCTION__, 'Found devices', 0);
-				
 				if(count($services)>0) {
 					foreach($services as $service) {
 						$this->SendDebug(__FUNCTION__, sprintf('Quering device %s for details', $service['Name']), 0);
@@ -172,8 +189,9 @@
 						
 							$devices[$id] = [	// Id is used as index
 								'Name' 		  => $service['Name'],
-								'DisplayName' => $displayName
-							];	
+								'DisplayName' => $displayName,
+								'Host'		  => $device[0]['IPv4'][0],
+							];	'Port'		  => $device[0]['Port']	
 						} else {
 							$msg = 
 							$this->SendDebug(__FUNCTION__, sprintf('Invalid query response from "%s". The response was: %s', $service['Name'], json_encode($device[0])), 0);
