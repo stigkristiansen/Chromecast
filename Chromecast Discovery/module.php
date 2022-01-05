@@ -191,7 +191,8 @@
 								'Name' 		  => $service['Name'],
 								'DisplayName' => $displayName,
 								'Host'		  => $device[0]['IPv4'][0],
-							];	'Port'		  => $device[0]['Port']	
+								'Port'		  => $device[0]['Port']	
+							];
 						} else {
 							$msg = 
 							$this->SendDebug(__FUNCTION__, sprintf('Invalid query response from "%s". The response was: %s', $service['Name'], json_encode($device[0])), 0);
