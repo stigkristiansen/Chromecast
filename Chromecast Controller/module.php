@@ -169,7 +169,7 @@ class ChromecastController extends IPSModule {
 		$this->SendDebug( __FUNCTION__ , 'Received status: '. json_encode($data->Buffer), 0);
 
 		if($this->GetTimerInterval('ResetVariables')>0) {
-			$this->SetTimerInterval('ResetVariables', 60000);
+			$this->SetTimerInterval('ResetVariables', 120000);
 		}
 
 		if(isset($data->Buffer->Command)) {
