@@ -33,6 +33,8 @@ class ChromecastReceiver extends IPSModule {
 		$this->RegisterTimer('CheckIOConfig', 0, 'IPS_RequestAction(' . (string)$this->InstanceID . ', "CheckIOConfig", 0);'); 
 		$this->RegisterTimer('DelayedInit', 0, 'IPS_RequestAction(' . (string)$this->InstanceID . ', "DelayedInit", 0);'); 
 		$this->RegisterTimer('GetMediaStatus', 0, 'IPS_RequestAction(' . (string)$this->InstanceID . ', "GetMediaStatus", 0);'); 
+
+		)
 	}
 
 	public function Destroy() {
@@ -45,6 +47,7 @@ class ChromecastReceiver extends IPSModule {
 		parent::ApplyChanges();
 		
 		$this->RegisterMessage(0, IPS_KERNELMESSAGE);
+		$this->RegisterMessage((0, FM_DISCONNECT);
 
 		if (IPS_GetKernelRunlevel() == KR_READY) {
             $this->Init();
@@ -59,6 +62,8 @@ class ChromecastReceiver extends IPSModule {
 		if ($Message == IPS_KERNELMESSAGE && $Data[0] == KR_READY) {
             $this->LogMessage('Detected "Kernel Ready"!', KL_NOTIFY);
 			$this->Init();
+		} else {
+			$this->SendDebug(__FUNCTION__, 'Detected "FM_DISCONNECT"!', 0);
 		}
     }
 
