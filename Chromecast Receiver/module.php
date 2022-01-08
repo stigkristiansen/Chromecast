@@ -33,8 +33,6 @@ class ChromecastReceiver extends IPSModule {
 		$this->RegisterTimer('CheckIOConfig', 0, 'IPS_RequestAction(' . (string)$this->InstanceID . ', "CheckIOConfig", 0);'); 
 		$this->RegisterTimer('DelayedInit', 0, 'IPS_RequestAction(' . (string)$this->InstanceID . ', "DelayedInit", 0);'); 
 		$this->RegisterTimer('GetMediaStatus', 0, 'IPS_RequestAction(' . (string)$this->InstanceID . ', "GetMediaStatus", 0);'); 
-
-		)
 	}
 
 	public function Destroy() {
