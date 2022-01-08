@@ -45,7 +45,7 @@ class ChromecastReceiver extends IPSModule {
 		parent::ApplyChanges();
 		
 		$this->RegisterMessage(0, IPS_KERNELMESSAGE);
-		$this->RegisterMessage($this->InstanceID, FM_DISCONNECT);
+		$this->RegisterMessage($this->InstanceID, IPS_FLOWMESSAGE);
 
 		if (IPS_GetKernelRunlevel() == KR_READY) {
             $this->Init();
@@ -61,7 +61,7 @@ class ChromecastReceiver extends IPSModule {
             $this->LogMessage('Detected "Kernel Ready"!', KL_NOTIFY);
 			$this->Init();
 		} else {
-			$this->SendDebug(__FUNCTION__, 'Detected "FM_DISCONNECT"!', 0);
+			$this->SendDebug(__FUNCTION__, 'Detected "IPS_FLOWMESSAGE"!', 0);
 		}
     }
 
