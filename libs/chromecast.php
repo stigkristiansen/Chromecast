@@ -11,12 +11,8 @@ trait Chromecast {
 		$msg->payloadtype = 0;
 		$msg->payloadutf8 = '{"type":"'.$Type.'"}';
 		
-		try {
-			$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
-			$this->SendDebug(__FUNCTION__, $Type . ' was sent', 0);
-		} catch(Exception $e) {
-
-		}
+		@$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
+		$this->SendDebug(__FUNCTION__, $Type . ' was sent', 0);
 	}
 
 	private function ConnectDevice() {
