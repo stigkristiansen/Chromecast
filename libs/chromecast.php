@@ -3,17 +3,17 @@
 declare(strict_types=1);
 
 trait Chromecast {
-	private function ParentActive() {
+	private function ParentIsActive() {
 		$parentId = IPS_GetInstance($this->InstanceID)['ConnectionID'];
 		return IPS_GetInstance($parentId)['InstanceStatus'] == 102;
 	}
 
 	private function SendToParent(string $JSON) {
-		if($this->ParentActive()) {
+		if($this->ParentIsActive()) {
 			$this->SendDataToParent($JSON);
 			return true;
 		} else {
-			$this->SendDebug(__FUNCTION__, 'The I/O instance is not active or in a error state', 0);
+			$this->SendDebug(__FUNCTION__, 'The I/O instance is not active or in an error state', 0);
 			return false;
 		}
 	}
@@ -39,8 +39,10 @@ trait Chromecast {
 		$msg->payloadtype = 0;
 		$msg->payloadutf8 = '{"type":"CONNECT"}';
 
-		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
-		$this->SendDebug(__FUNCTION__, ' CONNECT was sent to the device', 0);
+		//$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
+		if($this->SendToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]))) {
+			$this->SendDebug(__FUNCTION__, ' CONNECT was sent to the device', 0);
+		}
 	}
 
 	private function ConnectDeviceTransport() {
@@ -54,8 +56,10 @@ trait Chromecast {
 		$msg->payloadtype = 0;
 		$msg->payloadutf8 = '{"type":"CONNECT"}';
 
-		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
-		$this->SendDebug(__FUNCTION__, 'CONNECT with TransportId was sent to the device', 0);
+		//$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
+		if($this->SendToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]))) {
+			$this->SendDebug(__FUNCTION__, 'CONNECT with TransportId was sent to the device', 0);
+		}
 	}
 
     private function Launch(string $AppId) {
@@ -72,8 +76,10 @@ trait Chromecast {
         $requestId++;
 		$this->UpdateBuffer('RequestId', $requestId);
 
-        $this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
-		$this->SendDebug(__FUNCTION__, sprintf('LAUNCH was sent to the device with AppId %s', $AppId), 0);
+        //$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
+		if($this->SendToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]))) {
+			$this->SendDebug(__FUNCTION__, sprintf('LAUNCH was sent to the device with AppId %s', $AppId), 0);
+		}
 	}
 
 	private function GetDeviceStatus() {
@@ -90,8 +96,10 @@ trait Chromecast {
 		$requestId++;
 		$this->UpdateBuffer('RequestId', $requestId);
 						
-		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
-		$this->SendDebug(__FUNCTION__, sprintf('GET_STATUS was sent to the receiver with RequestId %d', $requestId), 0);
+		//$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
+		if($this->SendToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]))) {
+			$this->SendDebug(__FUNCTION__, sprintf('GET_STATUS was sent to the receiver with RequestId %d', $requestId), 0);
+		}
 	}
 
 	private function GetMediaStatus() {
@@ -111,8 +119,10 @@ trait Chromecast {
 		$requestId++;
 		$this->UpdateBuffer('RequestId', $requestId);
 						
-		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
-		$this->SendDebug(__FUNCTION__, sprintf('GET_STATUS (media) was sent to the receiver with RequestId %d', $requestId), 0);
+		//$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
+		if($this->SendToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]))) {
+			$this->SendDebug(__FUNCTION__, sprintf('GET_STATUS (media) was sent to the receiver with RequestId %d', $requestId), 0);
+		}
 	}
 
 	private function Stop() {
@@ -129,8 +139,10 @@ trait Chromecast {
         $requestId++;
 		$this->UpdateBuffer('RequestId', $requestId);
 
-		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($message)]));
-		$this->SendDebug(__FUNCTION__, 'STOP was sent', 0);
+		//$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($message)]));
+		if($this->SendToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($message)]))) {
+			$this->SendDebug(__FUNCTION__, 'STOP was sent', 0);
+		}
 	}
 
 	private function Pause() {
@@ -151,8 +163,10 @@ trait Chromecast {
         $requestId++;
 		$this->UpdateBuffer('RequestId', $requestId);
 
-		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($message)]));
-		$this->SendDebug(__FUNCTION__, 'PAUSE was sent', 0);
+		//$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($message)]));
+		if($this->SendToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($message)]))) {
+			$this->SendDebug(__FUNCTION__, 'PAUSE was sent', 0);
+		}
 	}
 
 	private function Play() {
@@ -173,8 +187,10 @@ trait Chromecast {
 		$urn = 'urn:x-cast:com.google.cast.media';
 		$message = $msg->FormatMessage($urn, $json, $transportId);
 
-		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($message)]));
-		$this->SendDebug(__FUNCTION__, 'PLAY was sent', 0);
+		//$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($message)]));
+		if($this->SendToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($message)]))) {
+			$this->SendDebug(__FUNCTION__, 'PLAY was sent', 0);
+		}
 	}
 
 	private function Seek(float $NewCurrentTime) {
@@ -195,8 +211,10 @@ trait Chromecast {
 		$urn = 'urn:x-cast:com.google.cast.media';
 		$message = $msg->FormatMessage($urn, $json, $transportId);
 
-		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($message)]));
-		$this->SendDebug(__FUNCTION__, 'SEEK was sent', 0);
+		//$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($message)]));
+		if($this->SendToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($message)]))) {
+			$this->SendDebug(__FUNCTION__, 'SEEK was sent', 0);
+		}
 	}
 
     private function Mute(bool $State) {
@@ -213,8 +231,10 @@ trait Chromecast {
         $requestId++;
 		$this->UpdateBuffer('RequestId', $requestId);
 
-		$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($message)]));
-		$this->SendDebug(__FUNCTION__, sprintf('MUTE was sent with value %s', $muteState), 0);
+		//$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($message)]));
+		if($this->SendToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($message)]))) {
+			$this->SendDebug(__FUNCTION__, sprintf('MUTE was sent with value %s', $muteState), 0);
+		}
 	}
 
     private function Volume(int $Level) {
@@ -232,8 +252,10 @@ trait Chromecast {
             $requestId++;
             $this->UpdateBuffer('RequestId', $requestId);
 
-            $this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($message)]));
-            $this->SendDebug(__FUNCTION__, sprintf('VOLUME LEVEL was sent with value %f', $volumeLevel), 0);
+            //$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($message)]));
+			if($this->SendToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($message)]))) {
+            	$this->SendDebug(__FUNCTION__, sprintf('VOLUME LEVEL was sent with value %f', $volumeLevel), 0);
+			}
         } else  {
             $this->SendDebug(__FUNCTION__, sprintf('Invalid VOLUME LEVEL %d!', $Level), 0);
         }
