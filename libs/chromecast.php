@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 trait Chromecast {
 	private function ParentActive() {
-		$parentId = IPS_GetParent($this->InstanceID);
+		$parentId = IPS_GetInstance($this->InstanceID)['ConnectionID'];
 		return IPS_GetInstance($parentId)['InstanceStatus'] == 102;
 	}
 
