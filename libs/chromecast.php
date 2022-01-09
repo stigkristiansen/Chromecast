@@ -3,6 +3,20 @@
 declare(strict_types=1);
 
 trait Chromecast {
+	private function ParentActive() {
+		$parentId = IPS_GetParent($this->InstanceID);
+		return IPS_GetInstance($parentId)['InstanceStatus'] == 102;
+	}
+
+	private function SendToParent(string $JSON) {
+		if($this->ParentActive()) {
+			$this->SendDataToParent($JSON);
+			return true;
+		} else {
+			$this->SendDebug(__FUNCTION__, 'The I/O instance is not active or in a error state', 0);
+			return false;
+		}
+	}
     private function SendPingPong(string $Type) {
 		$msg = new CastMessage();
 		$msg->source_id = "sender-0";
@@ -11,10 +25,10 @@ trait Chromecast {
 		$msg->payloadtype = 0;
 		$msg->payloadutf8 = '{"type":"'.$Type.'"}';
 		
-		$result = @$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
-
-		$this->SendDebug(__FUNCTION__, $Type . ' was sent', 0);
-	}
+		 //@$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
+		if($this->SendToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]))) {
+			$this->SendDebug(__FUNCTION__, $Type . ' was sent', 0);
+		} 
 
 	private function ConnectDevice() {
 		$msg = new CastMessage();
