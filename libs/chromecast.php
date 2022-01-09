@@ -13,7 +13,7 @@ trait Chromecast {
 		
 		$result = @$this->SendDataToParent(json_encode(['DataID' => '{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}', 'Buffer' => utf8_encode($msg->encode())]));
 
-		$this->SendDebug(__FUNCTION__, $Type . ' was sent with result ' . (string)$result, 0);
+		$this->SendDebug(__FUNCTION__, $Type . ' was sent with GetStatus()=' . (string)$this->GetStatus(), 0);
 	}
 
 	private function ConnectDevice() {

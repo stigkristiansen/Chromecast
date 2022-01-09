@@ -45,7 +45,6 @@ class ChromecastReceiver extends IPSModule {
 		parent::ApplyChanges();
 		
 		$this->RegisterMessage(0, IPS_KERNELMESSAGE);
-		$this->RegisterMessage(IPS_GetInstance($this->InstanceID)['ConnectionID'], IPS_FLOWMESSAGE);
 
 		if (IPS_GetKernelRunlevel() == KR_READY) {
             $this->Init();
@@ -60,9 +59,7 @@ class ChromecastReceiver extends IPSModule {
 		if ($Message == IPS_KERNELMESSAGE && $Data[0] == KR_READY) {
             $this->LogMessage('Detected "Kernel Ready"!', KL_NOTIFY);
 			$this->Init();
-		} else {
-			$this->SendDebug(__FUNCTION__, 'Detected "IPS_FLOWMESSAGE"!', 0);
-		}
+		} 
     }
 
 	private function Init(bool $NewDiscover=true) {
