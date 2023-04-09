@@ -54,7 +54,7 @@ class ChromecastReceiver extends IPSModule {
 	public function MessageSink($TimeStamp, $SenderID, $Message, $Data) {
         parent::MessageSink($TimeStamp, $SenderID, $Message, $Data);
 
-		$this->SendDebug(__FUNCTION__, sprintf('Received a message: %d - %d - %d', $SenderID, $Message, $data[0]), 0);
+		$this->SendDebug(__FUNCTION__, sprintf('Received a message: %d - %d - %d', $SenderID, $Message, $Data[0]), 0);
 
 		if ($Message == IPS_KERNELMESSAGE && $Data[0] == KR_READY) {
             $this->LogMessage('Detected "Kernel Ready"!', KL_NOTIFY);
