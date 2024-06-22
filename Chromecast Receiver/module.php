@@ -163,7 +163,7 @@ class ChromecastReceiver extends IPSModule {
 					$this->SendDebug(__FUNCTION__, 'The query returned data', 0);
 					$this->SendDebug(__FUNCTION__, sprintf('The data returned is: %s',json_encode($device[0])), 0);
 
-					$newHost = $device[0]['IPv4'][0];
+					$newHost = $device[0]['Host'];//$device[0]['IPv4'][0];
 					$newPort = $device[0]['Port'];
 
 					if($host!=$newHost || $port!=$newPort) {
