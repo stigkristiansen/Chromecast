@@ -190,7 +190,7 @@
 							$devices[$id] = [	// Id is used as index
 								'Name' 		  => $service['Name'],
 								'DisplayName' => $displayName,
-								'Host'		  => $device[0]['IPv4'][0],
+								'Host'		  => $device[0]['Host'], //$device[0]['IPv4'][0],
 								'Port'		  => $device[0]['Port']	
 							];
 						} else {
